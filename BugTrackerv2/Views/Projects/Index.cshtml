@@ -14,13 +14,21 @@
         <th>
             @Html.DisplayNameFor(model => model.Name)
         </th>
-        <th></th>
+        <th>
+            <p>Created On</p>
+        </th>
+        <th>
+            <p>Actions</p>
+        </th>
     </tr>
 
 @foreach (var item in Model) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Created)
         </td>
         <td>
             @Html.ActionLink("Edit", "Edit", new { id=item.ProjectId }) |
