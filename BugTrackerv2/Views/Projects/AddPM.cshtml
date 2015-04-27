@@ -1,0 +1,25 @@
+﻿@model BugTrackerv2.Models.CustomViewModels.UnifiedRoleView
+@{
+    ViewBag.Title = "AddPM";
+}
+
+<h2>AddPM</h2>
+
+<div class="container">
+    <h2>Assign/Unassign Project Managers To/From @Model.Project.Name</h2>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <p>Add Users to:</p>
+            @using (Html.BeginForm("AddPM", "Projects", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.Project.ProjectId)
+                @Html.AntiForgeryToken()
+                @Html.ListBox("AddedSelect", Model.AddedUsers)
+                <input type="submit" value=">>" class="btn btn-default" />
+            }
+        </div>
+        
+        <a href="@Url.Action("Index")">Back to Index</a>
+    </div>
+</div>

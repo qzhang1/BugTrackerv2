@@ -7,6 +7,11 @@ namespace BugTrackerv2.Models.ProjectFolder
 {
     public class Project
     {
+        public Project()
+        {
+            this.Users = new HashSet<ApplicationUser>();
+        }
+
         public int ProjectId { get; set; }
         public string Name { get; set; }
         public DateTime Created { get; set; }

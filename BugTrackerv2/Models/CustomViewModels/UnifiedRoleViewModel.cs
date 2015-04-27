@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-
+using BugTrackerv2.Models.ProjectFolder;
 namespace BugTrackerv2.Models.CustomViewModels
 {
     public class UnifiedRoleView
@@ -16,5 +16,6 @@ namespace BugTrackerv2.Models.CustomViewModels
         //string array of the items selected
         public string[] AddedSelect { get; set; }
         public string[] DeletedSelect { get; set; }
+        public Project Project { get; set; }
     }
 }
