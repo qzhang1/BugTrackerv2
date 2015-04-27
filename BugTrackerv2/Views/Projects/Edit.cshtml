@@ -31,8 +31,8 @@
         </div>
     </div>
 }
-<a href="@Url.Action("AddPM", "Projects", new { Id = Model.ProjectId})">Add Project Managers</a> |
-<a href="#">Add Developers</a>
+<a href="@Url.Action("EditUsers", "ProjectUsers", new { Id = Model.ProjectId, RoleName = "Project Manager"})">Add Project Managers</a> |
+<a href="@Url.Action("EditUsers", "ProjectUsers", new { Id = Model.ProjectId, RoleName = "Developer"})">Add Developers</a>
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>

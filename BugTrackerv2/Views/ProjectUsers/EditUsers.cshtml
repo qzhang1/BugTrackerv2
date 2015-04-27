@@ -1,0 +1,36 @@
+﻿@model BugTrackerv2.Models.CustomViewModels.ProjectUserViewModel
+@{
+    ViewBag.Title = "EditUsers";
+}
+
+<h2>EditUsers</h2>
+
+<div class="container">
+    <h2>Edit @Model.RoleName to/from @Model.projectName </h2>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <p>Add Users to:</p>
+            @using (Html.BeginForm("AssignUsers", "ProjectUsers", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.RoleName)
+                @Html.HiddenFor(model => model.projectId)
+                @Html.AntiForgeryToken()
+                @Html.ListBox("SelectUsersToAdd", Model.UsersToBeAdded)
+                <input type="submit" value=">>" class="btn btn-default" />
+            }
+        </div>
+        <div class="col-md-6">
+            <p>Delete Users from:</p>
+            @using (Html.BeginForm("RemoveUsers", "ProjectUsers", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.RoleName)
+                @Html.HiddenFor(model => model.projectId)
+                @Html.AntiForgeryToken()
+                @Html.ListBox("SelectUsersToRemove", Model.UsersToBeRemoved)
+                <input type="submit" value="<<" class="btn btn-default" />
+            }
+        </div>
+        <a href="@Url.Action("Index","Projects")">Back to Index</a>
+    </div>
+</div>

@@ -12,7 +12,11 @@ namespace BugTrackerv2.Models
     public class ApplicationUser : IdentityUser
     {
         public string DisplayName { get; set; }
-
+        public ApplicationUser()
+        {
+            this.Projects = new HashSet<Project>();
+            
+        }
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using System;
+using System.Data.Entity;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -26,8 +27,9 @@ namespace BugTrackerv2.Models.HelperFolder
             }
             return false;
              * */
+            //var result = db.Projects.Include(p => p.Users).FirstOrDefault(pr => pr.ProjectId == projectId).Users.ToList();
 
-            if(db.Projects.Find(projectId).Users.Any(u => u.Id == userId))
+            if(db.Projects.Include(p => p.Users).FirstOrDefault(pr => pr.ProjectId == projectId).Users.Any(u => u.Id == userId))
             {
                 return true;
             }
@@ -46,7 +48,7 @@ namespace BugTrackerv2.Models.HelperFolder
             
         }
 
-        public void RemoveUserToProject(string userId, int projectId)
+        public void RemoveUserFromProject(string userId, int projectId)
         {
             if(IsOnProject(userId, projectId))
             {
@@ -57,22 +59,23 @@ namespace BugTrackerv2.Models.HelperFolder
             }
         }
 
-        public ICollection<ApplicationUser> ListUsersOnProject(int projectId)
+        public List<ApplicationUser> ListUsersOnProject(int projectId)
         {
-            return db.Projects.Find(projectId).Users;
+            var result = db.Projects.Include(p=>p.Users).FirstOrDefault(pr => pr.ProjectId == projectId).Users.ToList();
+            return result;
         }
         
-        public ICollection<ProjectFolder.Project> ListProjectsForUser(string userId)
+        public List<ProjectFolder.Project> ListProjectsForUser(string userId)
         {
-            return db.Users.Find(userId).Projects;
+            return db.Users.Find(userId).Projects.ToList();
         }
 
-        public ICollection<ApplicationUser> ListUsersNotOnProject(int projectId)
+        public List<ApplicationUser> ListUsersNotOnProject(int projectId)
         {
-            
-            return db.Users.Where(u => u.Projects.All(p => p.ProjectId != projectId)).ToList();
 
-            //return db.Users.Include("Projects").Where(u => !(u.Projects.Any(p => p.Id == projectId)))).ToList();
+            var something = db.Users.Where(u => u.Projects.All(p => p.ProjectId != projectId)).ToList();
+            //var something = db.Users.Include("Projects").Where(u => !(u.Projects.Any(p => p.ProjectId == projectId))).ToList();
+            return something;
         }
     }
 }

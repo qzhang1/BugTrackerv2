@@ -21,55 +21,6 @@ namespace BugTrackerv2.Controllers
         {
             return View(db.Projects.ToList());
         }
-        
-        public ActionResult AddPM(int? Id)
-        {
-            if(Id==null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            var Project = db.Projects.Find(Id);
-            if(Project == null)
-            {
-                return HttpNotFound();
-            }
-
-            //display all the project managers on one select list and all the PMs you want on the project
-            var PMId = db.Roles.FirstOrDefault(r => r.Name == "Project Manager").Id;            
-            var PMusers = db.Users.Where(u => u.Roles.Any(r => r.RoleId == PMId));
-            var AlreadyPM = db.Projects.Where(p => p.Users.Any(u => u.Roles.Any(r => r.RoleId == PMId)));
-            var ToBeAdded = new MultiSelectList(PMusers,"Id","UserName");
-            var ToBeRemoved = new MultiSelectList(AlreadyPM, "Id", "UserName");
-            var model = new UnifiedRoleView
-            {
-                Project = Project,
-                AddedUsers = ToBeAdded,
-                DeletedUsers = ToBeRemoved
-            };
-
-            return View(model);
-        }
-
-        //POST
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult AddPM(UnifiedRoleView model)
-        {
-            var currentProjectId = model.Project.ProjectId;
-            var currentProject = db.Projects.Find(currentProjectId);
-            if(ModelState.IsValid)
-            {
-                var selected = model.AddedSelect;
-                foreach(var user in selected)
-                {
-                    var appuser = db.Users.FirstOrDefault(u => u.Id == user);
-                    currentProject.Users.Add(appuser);
-                }
-                
-                db.SaveChanges();                
-            }
-            return RedirectToAction("AddPM", new { Id = currentProject.ProjectId });
-        }
 
 
         // GET: Projects/Details/5
