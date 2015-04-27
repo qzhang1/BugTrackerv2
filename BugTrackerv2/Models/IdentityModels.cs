@@ -27,17 +27,18 @@ namespace BugTrackerv2.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        /*
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
-        }
+        }*/
 
-        /*
+        
         public ApplicationDbContext()
             : base("AzureConnection", throwIfV1Schema: false)
         {
         }
-        */
+        
 
         public static ApplicationDbContext Create()
         {

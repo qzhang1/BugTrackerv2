@@ -58,6 +58,14 @@ namespace BugTrackerv2.Models
         public string ConfirmPassword { get; set; }
     }
 
+    public class ChangeUserNameViewModel
+    {
+        public string Id { get; set; }
+        public string CurrentUserName { get; set; }
+        [StringLength(30)]
+        public string NewUserName { get; set; }
+    }
+
     public class AddPhoneNumberViewModel
     {
         [Required]

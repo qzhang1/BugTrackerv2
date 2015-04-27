@@ -15,6 +15,7 @@ namespace BugTrackerv2.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private ApplicationDbContext db = new ApplicationDbContext();
 
         public ManageController()
         {
@@ -228,6 +229,7 @@ namespace BugTrackerv2.Controllers
             {
                 return View(model);
             }
+            
             var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
             if (result.Succeeded)
             {
@@ -240,6 +242,45 @@ namespace BugTrackerv2.Controllers
             }
             AddErrors(result);
             return View(model);
+        }
+        
+        //Custom change username action
+        //GET
+        public ActionResult ChangeUserName()
+        {
+            var currentUser = User.Identity.GetUserId();
+            var currentUserName = db.Users.FirstOrDefault(u => u.Id == currentUser).UserName;
+            var model = new ChangeUserNameViewModel
+            {
+                CurrentUserName = currentUserName,
+                Id = currentUser
+            };
+            return View(model);
+        }
+        //POST
+        //important note: when making any changes to the db or updating user info 
+        //you MUST use Update() and save changes to the current context for changed data to persists
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> ChangeUserName(ChangeUserNameViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                ViewBag.ChangeFail = "Failed to change username please enter a new username";
+                return View(model);
+            }
+            var user = await UserManager.FindByIdAsync(model.Id);
+            
+            if(user != null)
+            {
+                user.UserName = model.NewUserName;
+                await UserManager.UpdateAsync(user);
+                db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+            ViewBag.ChangeFail = "Failed To Find the Current User";
+            return View(model);
+            
         }
 
         //
