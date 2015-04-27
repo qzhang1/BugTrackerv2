@@ -1,0 +1,42 @@
+﻿@model BugTrackerv2.Models.CustomViewModels.UserRoleViewModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Roles</th>
+            <th>Users</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var role in Model.RoleList)
+        {
+            int userCount = 1;
+            <tr>
+                <th>@role.Name</th>
+                <th>
+                    <p>
+                        @foreach(var user in Model.UserList)
+                        {
+                            userCount++; 
+                            if(user.Roles.Any(r => r.RoleId == role.Id))
+                            {
+                                @user.DisplayName
+                                if(userCount > 1)
+                                {
+                                    <span> &nbsp; </span>
+                                }                                
+                            }
+                                         
+                        }
+                    </p>
+                </th>
+                <th><a href="@Url.Action("EditRole","Role", new { RoleName = role.Name})">Edit Role</a></th>
+            </tr>
+        }
+    </tbody>
+</table>

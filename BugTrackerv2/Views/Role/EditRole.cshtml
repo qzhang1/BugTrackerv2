@@ -1,0 +1,33 @@
+﻿@model BugTrackerv2.Models.CustomViewModels.UnifiedRoleView
+@{
+    ViewBag.Title = "EditRole";
+}
+<div class="container">
+    <h2>Edit Users to/from @Model.RoleName Role</h2>
+    <br />
+    <div class="row">
+        <div class="col-md-6">
+            <p>Add Users to:</p>
+            @using (Html.BeginForm("AddRole", "Role", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.RoleName)
+                @Html.HiddenFor(model => model.RoleId)
+                @Html.AntiForgeryToken()
+                @Html.ListBox("AddedSelect", Model.AddedUsers)
+                <input type="submit" value=">>" class="btn btn-default" />
+            }
+        </div>
+        <div class="col-md-6">
+            <p>Delete Users from:</p>
+            @using (Html.BeginForm("DeleteRole", "Role", FormMethod.Post))
+            {
+                @Html.HiddenFor(model => model.RoleName)
+                @Html.HiddenFor(model => model.RoleId)
+                @Html.AntiForgeryToken()
+                @Html.ListBox("DeletedSelect", Model.DeletedUsers)
+                <input type="submit" value="<<" class="btn btn-default" />
+            }
+        </div>
+        <a href="@Url.Action("Index")">Back to Index</a>
+    </div>
+</div>
