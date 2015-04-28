@@ -1,4 +1,4 @@
-﻿@model BugTrackerv2.Models.ProjectFolder.Project
+﻿@model BugTrackerv2.Models.CustomViewModels.UserDisplayViewModel
 
 @{
     ViewBag.Title = "Details";
@@ -6,29 +6,40 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>Project</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dt>
-            Project Managers Assigned
-        </dt>
-        <dt>
-            Developers Assigned
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dd>
-
-        </dd>
-
-    </dl>
+<br /><br />
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <p><strong>Name</strong> @Model.projectName</p>
+        </div>
+    </div>
+    <br />
+    <div class="row">
+        <div class="col-md-5">
+            <table>
+                <tr><th>Project Managers</th></tr>
+                @foreach (var user in Model.PM)
+                {
+                    <tr><td>@user.DisplayName</td></tr>
+                }                
+            </table>
+        </div>
+        <div class="col-md-5">
+            <table>
+                <tr><th>Developers</th></tr>
+                @foreach (var user in Model.Devs)
+                {
+                    <tr><td>@user.DisplayName</td></tr>
+                }
+            </table>
+        </div>
+    </div>
 </div>
+<div class="table">
+
+</div>
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProjectId }) |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.projectId }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

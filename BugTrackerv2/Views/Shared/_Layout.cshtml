@@ -35,6 +35,15 @@
                         </li>
 
                     }
+                    else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+                    {
+                        <li>@Html.ActionLink("Projects","Index","Projects")</li>
+                        
+                    }
+                    @if(User.Identity.IsAuthenticated)
+                    {
+                        <li><a href="#">Tickets</a></li>
+                    }
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
                 @Html.Partial("_LoginPartial")

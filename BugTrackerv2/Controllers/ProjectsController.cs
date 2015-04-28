@@ -9,39 +9,31 @@ using System.Web.Mvc;
 using BugTrackerv2.Models;
 using BugTrackerv2.Models.ProjectFolder;
 using BugTrackerv2.Models.CustomViewModels;
-
+using BugTrackerv2.Models.HelperFolder;
+using Microsoft.AspNet.Identity;
 namespace BugTrackerv2.Controllers
 {
     public class ProjectsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
+        private UserProjectsHelper helper = new UserProjectsHelper();
 
         // GET: Projects
+        [Authorize(Roles="Administrator,Project Manager, Developer")]
         public ActionResult Index()
         {
-            return View(db.Projects.ToList());
+            var userId = User.Identity.GetUserId();
+            if(User.IsInRole("Administrator"))
+                return View(db.Projects.ToList());
+            else
+                return View (db.Users.FirstOrDefault(u => u.Id == userId).Projects.ToList());                            
         }
 
 
-        // GET: Projects/Details/5
-        public ActionResult Details(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Project project = db.Projects.Find(id);
-            if (project == null)
-            {
-                return HttpNotFound();
-            }
-            //send data about users in pm and dev roles via viewbag
-            ViewBag.PMusers = db.Roles.Where(r => r.Name == "Project Manager").ToList();
-            ViewBag.Devusers = db.Roles.Where(r => r.Name == "Developer").ToList();
-            return View(project);
-        }
+        
 
         // GET: Projects/Create
+        [Authorize(Roles="Administrator")]
         public ActionResult Create()
         {
             return View();
@@ -52,6 +44,7 @@ namespace BugTrackerv2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles="Administrator")]
         public ActionResult Create([Bind(Include = "ProjectId,Name")] Project project)
         {
             if (ModelState.IsValid)
@@ -66,18 +59,39 @@ namespace BugTrackerv2.Controllers
         }
 
         // GET: Projects/Edit/5
+        [Authorize(Roles="Administrator,Project Manager")]
         public ActionResult Edit(int? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Project project = db.Projects.Find(id);
-            if (project == null)
+            Project project = db.Projects.Include(p => p.Users).FirstOrDefault(pr => pr.ProjectId == id);
+            var PM_Id = db.Roles.Single(r => r.Name == "Project Manager").Id;
+            var Dev_Id = db.Roles.Single(r => r.Name == "Developer").Id;
+
+            List<ApplicationUser> UsersNotOnProject ;
+            List<ApplicationUser> UsersOnProject;
+            if(User.IsInRole("Administrator"))
             {
-                return HttpNotFound();
+                 UsersNotOnProject = helper.ListUsersNotOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).ToList();
+                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).ToList();
             }
-            return View(project);
+            else
+            {
+                 UsersNotOnProject = helper.ListUsersNotOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).ToList();
+                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).ToList();
+            }
+            
+            var model = new EditProjectViewModel
+            {
+                projectName = project.Name,
+                projectId = project.ProjectId,
+                UsersToBeAdded = new MultiSelectList(UsersNotOnProject, "Id", "DisplayName"),
+                UsersToBeRemoved = new MultiSelectList(UsersOnProject, "Id", "DisplayName"),
+
+            };
+            return View(model);
         }
 
         // POST: Projects/Edit/5
@@ -85,18 +99,37 @@ namespace BugTrackerv2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProjectId,Name")] Project project)
+        [Authorize(Roles="Administrator, Project Manager")]
+        public ActionResult Edit(EditProjectViewModel model)
         {
             if (ModelState.IsValid)
             {
+                //track current project via projectId and change it's name
+                var project = db.Projects.Single(u => u.ProjectId == model.projectId);
+                project.Name = model.projectName; 
+
+                //check what multiselectlists are selected and accomplish the associated tasks
+                //add/remove project managers
+                if (model.SelectUsersToAdd != null)
+                {
+                    foreach (string id in model.SelectUsersToAdd)
+                        helper.AddUsersToProject(id, model.projectId);
+                }
+                if (model.SelectUsersToRemove != null)
+                {
+                    foreach (string id in model.SelectUsersToRemove)
+                        helper.RemoveUserFromProject(id, model.projectId);
+                }                
+
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Edit", new {Id = project.ProjectId });
             }
-            return View(project);
+            return View(model);
         }
 
         // GET: Projects/Delete/5
+        [Authorize(Roles="Administrator")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -114,12 +147,38 @@ namespace BugTrackerv2.Controllers
         // POST: Projects/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles="Administrator")]
         public ActionResult DeleteConfirmed(int id)
         {
             Project project = db.Projects.Find(id);
             db.Projects.Remove(project);
             db.SaveChanges();
             return RedirectToAction("Index");
+        }
+
+        // GET: Projects/Details/5
+        [Authorize]
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            //include is required since join table is implicitly created so include is necessary to tell 
+            //compiler that there is a user navigation property there
+            Project project = db.Projects.Include(p => p.Users).FirstOrDefault(pr => pr.ProjectId == id); ;
+            if (project == null)
+            {
+                return HttpNotFound();
+            }
+            var model = new UserDisplayViewModel
+            {
+                projectName = project.Name,
+                projectId = project.ProjectId,
+                PM = project.Users.Where(u => u.Roles.Any(r => r.RoleId == (db.Roles.Single(rs => rs.Name == "Project Manager").Id))).ToList(),
+                Devs = project.Users.Where(u => u.Roles.Any(r => r.RoleId == (db.Roles.Single(rs => rs.Name == "Developer").Id))).ToList()
+            };
+            return View(model);
         }
 
         protected override void Dispose(bool disposing)

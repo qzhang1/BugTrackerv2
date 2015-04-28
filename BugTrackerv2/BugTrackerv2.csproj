@@ -175,8 +175,10 @@
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CustomViewModels\EditProjectViewModel.cs" />
     <Compile Include="Models\CustomViewModels\ProjectUserViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UnifiedRoleViewModel.cs" />
+    <Compile Include="Models\CustomViewModels\UserDisplayViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserRoleViewModel.cs" />
     <Compile Include="Models\HelperFolder\UserProjectsHelper.cs" />
     <Compile Include="Models\HelperFolder\UserRolesHelper.cs" />
