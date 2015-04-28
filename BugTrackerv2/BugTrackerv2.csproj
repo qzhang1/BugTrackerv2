@@ -186,6 +186,7 @@
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\ProjectFolder\Project.cs" />
     <Compile Include="Models\TicketFolder\Ticket.cs" />
+    <Compile Include="Models\TicketFolder\TicketStatus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
