@@ -19,8 +19,13 @@ namespace BugTrackerv2.Controllers
         // GET: Tickets
         public ActionResult Index()
         {
-            var tickets = db.Tickets.ToList();
-            return View(tickets);
+            var userId = User.Identity.GetUserId();
+            if (User.IsInRole("Administrator"))
+                return View(db.Tickets.ToList());
+            else if (User.IsInRole("Submitter"))
+                return View(db.Tickets.Where(t => t.OwnerUserId == userId).ToList());
+            else
+                return View((db.Tickets.Where(t => t.project.Users.Any(u => u.Id == userId))).ToList());
         }
 
         // GET: Tickets/Details/5
@@ -56,11 +61,18 @@ namespace BugTrackerv2.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "TicketId,Title,Description,Created,Updated,OwnerUserId,AssignedToUserId,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId")] Ticket ticket)
+        public ActionResult Create(Ticket ticket, HttpPostedFileBase image)
         {
             if (ModelState.IsValid)
             {
                 ticket.Created = System.DateTime.Now;
+                var OwnerId = User.Identity.GetUserId();
+                ticket.OwnerUserId = db.Users.FirstOrDefault(u => u.Id == OwnerId).Id;
+                ticket.Owner = db.Users.FirstOrDefault(u => u.Id == ticket.OwnerUserId);
+
+                ticket.TicketStatusId = db.TicketStatuses.FirstOrDefault(s => s.Name == "New").TicketStatusId;
+                ticket.project = db.Projects.FirstOrDefault(p => p.ProjectId == ticket.ProjectId);
+
                 db.Tickets.Add(ticket);
                 db.SaveChanges();
                 return RedirectToAction("Index");

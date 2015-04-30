@@ -9,7 +9,7 @@
 @using (Html.BeginForm("Create", "Tickets", FormMethod.Post, new { enctype = "Multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
-
+    @Html.HiddenFor(model => model.project.Name)
     <div class="form-horizontal">
         <h4>Ticket</h4>
         <hr />
@@ -25,7 +25,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = "5", id = "editor" })
+                @Html.TextAreaFor(model => model.Description, new { @class = "form-control", rows = "5"})
                 @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
             </div>
         </div>
@@ -72,11 +72,5 @@
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
     
-    <script src="/Scripts/tinymce/tinymce.min.js"></script>
-    <script src="/Scripts/tinymce/jquery.tinymce.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#editor').tinymce({});
-        });
-    </script>
+   
 }
