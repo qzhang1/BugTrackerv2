@@ -2,18 +2,28 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.ComponentModel.DataAnnotations;
 using BugTrackerv2.Models.ProjectFolder;
 namespace BugTrackerv2.Models.TicketFolder
 {
     public class Ticket
     {
+
+        public Ticket()
+        {
+            this.TicketAttachments = new HashSet<TicketAttachment>();
+            this.TicketComments = new HashSet<TicketComment>();
+        }
+
         //data properties
         public int TicketId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public DateTime Created { get; set; }
         public DateTime? Updated { get; set; }
+        [Display(Name="Ticket Owner")]
         public string OwnerUserId { get; set; }
+        [Display(Name="Assigned To")]
         public string AssignedToUserId { get; set; }
 
 
@@ -26,6 +36,13 @@ namespace BugTrackerv2.Models.TicketFolder
 
 
         //nav propertiers
-        public Project project { get; set; }                    //1 project => many tickets
+        [Display(Name="Project")]
+        public Project project { get; set; }                  //1 project => many tickets
+        public virtual TicketType TicketType { get; set; }
+        public virtual TicketPriority TicketPriority { get; set; }
+        public virtual TicketStatus TicketStatus { get; set; }
+        public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }
+        public virtual ICollection<TicketComment> TicketComments { get; set; }
+
     }
 }

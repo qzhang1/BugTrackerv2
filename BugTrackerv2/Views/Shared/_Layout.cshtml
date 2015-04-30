@@ -42,7 +42,7 @@
                     }
                     @if(User.Identity.IsAuthenticated)
                     {
-                        <li><a href="#">Tickets</a></li>
+                        <li><a href="@Url.Action("Index","Tickets")">Tickets</a></li>
                     }
                     <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
                 </ul>
