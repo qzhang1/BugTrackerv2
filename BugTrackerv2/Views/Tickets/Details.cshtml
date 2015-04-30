@@ -35,6 +35,14 @@
         </dd>
 
         <dt>
+            @Html.DisplayNameFor(model => model.TicketStatus.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TicketStatus.Name)
+        </dd>
+
+        <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
 
@@ -67,31 +75,59 @@
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.OwnerUserId)
+            @Html.DisplayNameFor(model => model.OwnerUser.DisplayName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.OwnerUserId)
+            @Html.DisplayFor(model => model.OwnerUser.DisplayName)
         </dd>
 
         <dt>
-            @Html.DisplayNameFor(model => model.AssignedToUserId)
+            @Html.DisplayNameFor(model => model.AssignedToUser.DisplayName)
         </dt>
 
         <dd>
-            @Html.DisplayFor(model => model.AssignedToUserId)
+            @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketStatusId)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TicketStatusId)
-        </dd>
+        
 
     </dl>
 </div>
+
+<div>
+    <h4>Comment</h4>
+    @using(Html.BeginForm("AddComment","Tickets"))
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-group">
+            <textarea name="Comment" class="form-control" rows="3"></textarea>
+            @Html.HiddenFor(model => model.TicketId)
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    }
+</div>
+
+<hr />
+@foreach(var comment in Model.TicketComments)
+{
+    <div class="media">
+        <a class="pull-left" href="#">
+            <img class="media-object" src="http://placehold.it/64x64" alt="" />
+        </a>
+        <div class="media-body">
+            <h4 class="media-heading">
+                @comment.User.DisplayName
+                <small>Posted On @comment.Created.ToShortDateString()</small>
+            </h4>
+            @Html.DisplayFor(c => comment.Comment)
+            
+        </div>
+    </div>
+}
+
+
+
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.TicketId }) |
     @Html.ActionLink("Back to List", "Index")

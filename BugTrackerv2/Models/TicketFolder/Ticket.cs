@@ -41,8 +41,9 @@ namespace BugTrackerv2.Models.TicketFolder
         public virtual TicketType TicketType { get; set; }
         public virtual TicketPriority TicketPriority { get; set; }
         public virtual TicketStatus TicketStatus { get; set; }
-        public virtual ApplicationUser Owner { get; set; }
-        public virtual ApplicationUser AssignedTo { get; set; }
+        [Display(Name="Owner")]
+        public virtual ApplicationUser OwnerUser { get; set; }
+        public virtual ApplicationUser AssignedToUser { get; set; }
         public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }
         public virtual ICollection<TicketComment> TicketComments { get; set; }
 
