@@ -97,12 +97,14 @@
 
 <div>
     <h4>Comment</h4>
+    <p>@ViewBag.ErrorMsg</p>
     @using(Html.BeginForm("AddComment","Tickets"))
     {
+        @Html.HiddenFor(model => model.TicketId)
+                
         @Html.AntiForgeryToken()
         <div class="form-group">
-            <textarea name="Comment" class="form-control" rows="3"></textarea>
-            @Html.HiddenFor(model => model.TicketId)
+            <textarea name="Comment" class="form-control" rows="3"></textarea>        
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     }

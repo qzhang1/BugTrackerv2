@@ -40,6 +40,7 @@ namespace BugTrackerv2.Controllers
             {
                 return HttpNotFound();
             }
+            ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
             return View(ticket);
         }
 
@@ -50,10 +51,48 @@ namespace BugTrackerv2.Controllers
         {
             if(ModelState.IsValid)
             {
-                Body.Created = System.DateTime.Now;
-                Body.UserId = User.Identity.GetUserId();
-                db.TicketComments.Add(Body);
-                db.SaveChanges();
+                if(User.IsInRole("Submitter"))
+                {
+                    var userId = User.Identity.GetUserId();
+                    var ticketProject = db.Tickets.FirstOrDefault(t => t.TicketId == Body.TicketId).OwnerUserId;
+                    //submitters
+                    if(ticketProject == (userId))
+                    {
+                        //if submitter owns this ticket then add comment
+                        Body.Created = System.DateTime.Now;
+                        Body.UserId = User.Identity.GetUserId();
+                        db.TicketComments.Add(Body);
+                        db.SaveChanges();
+                        return RedirectToAction("Details", new { Id = Body.TicketId });
+                    }
+                }
+                else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+                {
+                    //PM or dev
+                    var userId = (User.Identity.GetUserId());
+                    var userInProject = db.Users.FirstOrDefault(u => u.Id == userId ).Projects.ToList();
+                    var ticketProject = db.Tickets.FirstOrDefault(t => t.TicketId == Body.TicketId).ProjectId;
+                    foreach(var project in userInProject)
+                    {
+                        if (project.ProjectId == ticketProject)
+                        {
+                            Body.Created = System.DateTime.Now;
+                            Body.UserId = User.Identity.GetUserId();
+                            db.TicketComments.Add(Body);
+                            db.SaveChanges();
+                            return RedirectToAction("Details", new { Id = Body.TicketId });
+                        }
+                    }
+                }
+                else
+                {
+                    Body.Created = System.DateTime.Now;
+                    Body.UserId = User.Identity.GetUserId();
+                    db.TicketComments.Add(Body);
+                    db.SaveChanges();
+                    return RedirectToAction("Details", new { Id = Body.TicketId });
+                }
+                
             }
             return RedirectToAction("Index");
         }
