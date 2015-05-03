@@ -1,11 +1,11 @@
-﻿@model BugTrackerv2.Models.ChangeUserNameViewModel
+﻿@model BugTrackerv2.Models.ChangeDisplayNameViewModel
 @{
     ViewBag.Title = "Change Username";
 }
 
 <h2>@ViewBag.Title.</h2>
 
-@using (Html.BeginForm("ChangeUserName", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+@using (Html.BeginForm("ChangeDisplayName", "Manage", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
     <h4>Change Username Form</h4>
@@ -13,15 +13,15 @@
     <hr />
     @Html.ValidationSummary("", new { @class = "text-danger" })
     <div class="form-group">
-        @Html.LabelFor(m => m.CurrentUserName, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.CurrentDisplayName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.CurrentUserName, new { @class = "form-control", disabled = "disabled" })
+            @Html.TextBoxFor(m => m.CurrentDisplayName, new { @class = "form-control", disabled = "disabled" })
         </div>
     </div>
     <div class="form-group">
-        @Html.LabelFor(m => m.NewUserName, new { @class = "col-md-2 control-label" })
+        @Html.LabelFor(m => m.NewDisplayName, new { @class = "col-md-2 control-label" })
         <div class="col-md-10">
-            @Html.TextBoxFor(m => m.NewUserName, new { @class = "form-control" })
+            @Html.TextBoxFor(m => m.NewDisplayName, new { @class = "form-control" })
         </div>
     </div>
     

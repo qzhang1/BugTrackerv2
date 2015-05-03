@@ -9,41 +9,54 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-<table class="table">
-    <tr>
-        
-        
-        
-        <th>
-            @Html.DisplayNameFor(model => model.Title)
-        </th>
-        <th>
-            Project
-        </th>
-        <th>
-            Type
-        </th>
-        <th>
-            Status
-        </th>
-        <th>
-            Priority
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Created)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Updated)
-        </th>
-        <th>
-            Owner
-        </th>
-        <th>
-            Assignee
-        </th>
-        <th>Actions</th>
-    </tr>
 
+<style>
+    .glyphicon{
+        padding-left: 40px;
+    }
+</style>
+<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="index">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                Project
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                Type
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                Status
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                Priority
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Created)
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Updated)
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                Owner
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>
+                Assignee
+                <i class="fa fa-fw fa-sort"></i>
+            </th>
+            <th>Actions</th>
+        </tr>
+    </thead>
 @foreach (var item in Model) {
     <tr>
         <td>
@@ -75,11 +88,18 @@
         </td>
         
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.TicketId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.TicketId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.TicketId })
+            @Html.ActionLink("Details", "Details", new { id = item.TicketId }) 
+            @if (!User.IsInRole("Submitter"))
+            {
+                <span> |
+                    @Html.ActionLink("Edit", "Edit", new { id = item.TicketId }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.TicketId })
+                </span>
+            }
+            
         </td>
     </tr>
 }
 
 </table>
+

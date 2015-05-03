@@ -10,6 +10,7 @@ using BugTrackerv2.Models;
 using BugTrackerv2.Models.TicketFolder;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
+using System.IO;
 namespace BugTrackerv2.Controllers
 {
     public class TicketsController : Controller
@@ -29,6 +30,7 @@ namespace BugTrackerv2.Controllers
         }
 
         // GET: Tickets/Details/5
+        [Authorize()]
         public ActionResult Details(int? id)
         {
             if (id == null)
@@ -40,8 +42,34 @@ namespace BugTrackerv2.Controllers
             {
                 return HttpNotFound();
             }
-            ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
-            return View(ticket);
+            //if the PM/Dev is not apart of this project then not permitted to view this page. re-route user back to index
+            //unable to comment or attach anything to this ticket            
+            var userId = User.Identity.GetUserId();
+            if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            {
+                var projects = db.Users.FirstOrDefault(u => u.Id == userId).Projects.ToList();           //projects the current user is involved in
+                foreach(var project in projects)
+                {
+                    if(project.ProjectId == ticket.ProjectId)
+                    {
+                        ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
+                        return View(ticket);
+                    }
+                }
+            }
+            else if(User.IsInRole("Submitter") && (ticket.OwnerUserId == userId))
+            {
+                ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
+                return View(ticket);
+            }
+            else if(User.IsInRole("Administrator"))
+            {
+                ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
+                return View(ticket);
+            }
+
+
+            return RedirectToAction("Index");
         }
 
         [Authorize()]
@@ -50,54 +78,51 @@ namespace BugTrackerv2.Controllers
         public ActionResult AddComment(TicketComment Body)
         {
             if(ModelState.IsValid)
-            {
-                if(User.IsInRole("Submitter"))
-                {
-                    var userId = User.Identity.GetUserId();
-                    var ticketProject = db.Tickets.FirstOrDefault(t => t.TicketId == Body.TicketId).OwnerUserId;
-                    //submitters
-                    if(ticketProject == (userId))
-                    {
-                        //if submitter owns this ticket then add comment
-                        Body.Created = System.DateTime.Now;
-                        Body.UserId = User.Identity.GetUserId();
-                        db.TicketComments.Add(Body);
-                        db.SaveChanges();
-                        return RedirectToAction("Details", new { Id = Body.TicketId });
-                    }
-                }
-                else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
-                {
-                    //PM or dev
-                    var userId = (User.Identity.GetUserId());
-                    var userInProject = db.Users.FirstOrDefault(u => u.Id == userId ).Projects.ToList();
-                    var ticketProject = db.Tickets.FirstOrDefault(t => t.TicketId == Body.TicketId).ProjectId;
-                    foreach(var project in userInProject)
-                    {
-                        if (project.ProjectId == ticketProject)
-                        {
-                            Body.Created = System.DateTime.Now;
-                            Body.UserId = User.Identity.GetUserId();
-                            db.TicketComments.Add(Body);
-                            db.SaveChanges();
-                            return RedirectToAction("Details", new { Id = Body.TicketId });
-                        }
-                    }
-                }
-                else
-                {
+            {               
                     Body.Created = System.DateTime.Now;
                     Body.UserId = User.Identity.GetUserId();
                     db.TicketComments.Add(Body);
                     db.SaveChanges();
-                    return RedirectToAction("Details", new { Id = Body.TicketId });
-                }
-                
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { Id = Body.TicketId });
         }
 
+        
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult AddAttachment(TicketAttachment attachment, HttpPostedFileBase file)
+        {
+            if(file != null && file.ContentLength > 0)
+            {
+                var extension = Path.GetExtension(file.FileName);
+                if(extension != ".png" && extension!=".jpg" && extension!=".gif" && extension!=".txt")
+                {
+                    ModelState.AddModelError("file", "Invalid format");
+                }
+            }
+            if(ModelState.IsValid)
+            {
+                if(file != null)
+                {
+                    attachment.Created = System.DateTime.Now;
+                    
+                    attachment.UserId = User.Identity.GetUserId();
+                    attachment.FilePath = "/attachments/";
+                    var absPath = Server.MapPath("~" + attachment.FilePath);
+                    attachment.FileUrl = attachment.FilePath + file.FileName;
+                    file.SaveAs(Path.Combine(absPath, file.FileName));
+                    attachment.FileName = file.FileName;
+                }
+                db.TicketAttachments.Add(attachment);
+                db.SaveChanges();                
+            }
+            
+            return RedirectToAction("Details", new { Id = attachment.TicketId });
+        }
+        
         // GET: Tickets/Create
+        // any authorized person can create tickets
+        [Authorize()]
         public ActionResult Create()
         {
             //owner is the one who is creating the ticket atm
@@ -197,6 +222,7 @@ namespace BugTrackerv2.Controllers
         }
 
         // GET: Tickets/Delete/5
+        [Authorize(Roles = "Administrator,Project Manager, Developer")]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -221,6 +247,9 @@ namespace BugTrackerv2.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
+
+
+
 
         protected override void Dispose(bool disposing)
         {

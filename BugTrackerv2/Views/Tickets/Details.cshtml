@@ -3,134 +3,188 @@
 @{
     ViewBag.Title = "Details";
 }
+<style>
+    th,td{
+        padding-right: 8px;
+        padding-bottom: 2px;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <h2>Details</h2>
+        <div>
+            <h4>Ticket</h4>
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.project.Name)
+                </dt>
 
-<h2>Details</h2>
+                <dd>
+                    @Html.DisplayFor(model => model.project.Name)
+                </dd>
 
-<div>
-    <h4>Ticket</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.project.Name)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.TicketPriority.Name)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.project.Name)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.TicketPriority.Name)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketPriority.Name)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.TicketType.Name)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TicketPriority.Name)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.TicketType.Name)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketType.Name)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.TicketStatus.Name)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TicketType.Name)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.TicketStatus.Name)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.TicketStatus.Name)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Title)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.TicketStatus.Name)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Title)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Description)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Description)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Created)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Created)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
-        </dt>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Updated)
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Created)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.Updated)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Updated)
-        </dt>
+                <dt>
+                    Owner
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Updated)
-        </dd>
+                <dd>
+                    @Html.DisplayFor(model => model.OwnerUser.DisplayName)
+                </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.OwnerUser.DisplayName)
-        </dt>
+                <dt>
+                    Assigned To
+                </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.OwnerUser.DisplayName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.AssignedToUser.DisplayName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
-        </dd>
-
-        
-
-    </dl>
-</div>
-
-<div>
-    <h4>Comment</h4>
-    <p>@ViewBag.ErrorMsg</p>
-    @using(Html.BeginForm("AddComment","Tickets"))
-    {
-        @Html.HiddenFor(model => model.TicketId)
-                
-        @Html.AntiForgeryToken()
-        <div class="form-group">
-            <textarea name="Comment" class="form-control" rows="3"></textarea>        
+                <dd>
+                    @Html.DisplayFor(model => model.AssignedToUser.DisplayName)
+                </dd>
+            </dl>
+            <hr />
         </div>
-        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <h4>Add Attachments</h4>
+            @using (Html.BeginForm("AddAttachment", "Tickets", FormMethod.Post, new { enctype = "Multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(m => m.TicketId)
+
+                <label class="control-label">Attachment</label>
+
+                <input type="file" id="fileUpload" name="file" />
+                @Html.ValidationMessage("image", new { @class = "text-danger" })
+                <br />
+                <label class="control-label">Attachment Description</label>
+
+                <textarea name="Description" class="form-control" rows="3" placeholder="Please Enter a brief Description"></textarea>
+                <br />
+                <button type="submit" class="btn btn-default">Attach</button>
+            }
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <h4>Ticket Attachments</h4>
+            <table class="table-striped" width="100%">
+                <thead>
+                    <tr>
+                        <th>Created</th>
+                        <th>By</th>
+                        <th>Attachedment</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var attach in Model.TicketAttachments)
+                    {
+                        <tr>
+                            <td>@attach.Created.ToShortDateString()</td>
+                            <td>@attach.User.DisplayName</td>
+                            <td><a href="@attach.FileUrl">@attach.FileName</a></td>
+                        <td>@attach.Description</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <hr />
+    <div class="row">
+        <div>
+            <h4>Comment</h4>
+            <p>@ViewBag.ErrorMsg</p>
+            @using (Html.BeginForm("AddComment", "Tickets"))
+            {
+                @Html.HiddenFor(model => model.TicketId)
+
+                @Html.AntiForgeryToken()
+                <div class="form-group">
+                    <textarea name="Comment" class="form-control" rows="3" ></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            }
+        </div>
+    </div>
+    
+    @foreach (var comment in Model.TicketComments)
+    {
+        <div class="media">
+            <a class="pull-left" href="#">
+                <img class="media-object" src="http://placehold.it/64x64" alt="" />
+            </a>
+            <div class="media-body">
+                <h4 class="media-heading">
+                    @comment.User.DisplayName
+                    <small>Posted On @comment.Created.ToShortDateString()</small>
+                </h4>
+                @Html.DisplayFor(c => comment.Comment)
+
+            </div>
+        </div>
     }
 </div>
 
-<hr />
-@foreach(var comment in Model.TicketComments)
-{
-    <div class="media">
-        <a class="pull-left" href="#">
-            <img class="media-object" src="http://placehold.it/64x64" alt="" />
-        </a>
-        <div class="media-body">
-            <h4 class="media-heading">
-                @comment.User.DisplayName
-                <small>Posted On @comment.Created.ToShortDateString()</small>
-            </h4>
-            @Html.DisplayFor(c => comment.Comment)
-            
-        </div>
-    </div>
-}
-
-
-
+<br />
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.TicketId }) |
+    @if (!User.IsInRole("Submitter"))
+    {
+        <span>@Html.ActionLink("Edit", "Edit", new { id = Model.TicketId }) |</span>
+    }
+    
     @Html.ActionLink("Back to List", "Index")
 </p>

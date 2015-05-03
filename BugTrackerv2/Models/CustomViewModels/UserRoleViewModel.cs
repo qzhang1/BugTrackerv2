@@ -7,6 +7,7 @@ namespace BugTrackerv2.Models.CustomViewModels
 {
     public class UserRoleViewModel
     {
+
         public List<Microsoft.AspNet.Identity.EntityFramework.IdentityRole> RoleList { get; set; }
         public List<ApplicationUser> UserList { get; set; }
     }

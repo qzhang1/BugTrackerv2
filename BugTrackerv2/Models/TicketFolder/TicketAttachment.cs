@@ -13,8 +13,9 @@ namespace BugTrackerv2.Models.TicketFolder
         public string FilePath { get; set; }
         public string Description { get; set; }
         public DateTime Created { get; set; }
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public string FileUrl { get; set; }
+        public string FileName { get; set; }
 
         //attachment belong to one user and one ticket. 
         //one ticket can have many attachments

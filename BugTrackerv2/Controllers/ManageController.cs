@@ -246,13 +246,13 @@ namespace BugTrackerv2.Controllers
         
         //Custom change username action
         //GET
-        public ActionResult ChangeUserName()
+        public ActionResult ChangeDisplayName()
         {
             var currentUser = User.Identity.GetUserId();
-            var currentUserName = db.Users.FirstOrDefault(u => u.Id == currentUser).UserName;
-            var model = new ChangeUserNameViewModel
+            var currentDisplayName = db.Users.FirstOrDefault(u => u.Id == currentUser).DisplayName;
+            var model = new ChangeDisplayNameViewModel
             {
-                CurrentUserName = currentUserName,
+                CurrentDisplayName = currentDisplayName,
                 Id = currentUser
             };
             return View(model);
@@ -262,7 +262,7 @@ namespace BugTrackerv2.Controllers
         //you MUST use Update() and save changes to the current context for changed data to persists
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangeUserName(ChangeUserNameViewModel model)
+        public async Task<ActionResult> ChangeDisplayName(ChangeDisplayNameViewModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -273,7 +273,7 @@ namespace BugTrackerv2.Controllers
             
             if(user != null)
             {
-                user.UserName = model.NewUserName;
+                user.DisplayName = model.NewDisplayName;
                 await UserManager.UpdateAsync(user);
                 db.SaveChanges();
                 return RedirectToAction("Index");

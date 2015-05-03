@@ -58,12 +58,12 @@ namespace BugTrackerv2.Models
         public string ConfirmPassword { get; set; }
     }
 
-    public class ChangeUserNameViewModel
+    public class ChangeDisplayNameViewModel
     {
         public string Id { get; set; }
-        public string CurrentUserName { get; set; }
+        public string CurrentDisplayName { get; set; }
         [StringLength(30)]
-        public string NewUserName { get; set; }
+        public string NewDisplayName { get; set; }
     }
 
     public class AddPhoneNumberViewModel
