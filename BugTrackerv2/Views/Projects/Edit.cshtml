@@ -51,21 +51,23 @@
                 </div>
                 <div class="panel-body" style="padding-bottom:23px;">
                     <div class="form-horizontal">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p>Select Users to Add Project</p>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p>Add to Project</p>
 
-                                @Html.HiddenFor(model => model.projectId)
-                                @Html.ListBox("SelectUsersToAdd", Model.UsersToBeAdded)
+                                    @Html.HiddenFor(model => model.projectId)
+                                    @Html.ListBox("SelectUsersToAdd", Model.UsersToBeAdded)
+
+                                </div>
+                                <div class="col-md-6">
+                                    <p>Remove from Project</p>
+
+                                    @Html.HiddenFor(model => model.projectId)
+                                    @Html.ListBox("SelectUsersToRemove", Model.UsersToBeRemoved)
+                                </div>
 
                             </div>
-                            <div class="col-md-6">
-                                <p>Select Users to Remove from Project</p>
-
-                                @Html.HiddenFor(model => model.projectId)
-                                @Html.ListBox("SelectUsersToRemove", Model.UsersToBeRemoved)
-                            </div>
-                            
                         </div>
                     </div>
                 </div>

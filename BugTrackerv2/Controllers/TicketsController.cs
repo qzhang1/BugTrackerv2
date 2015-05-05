@@ -45,7 +45,12 @@ namespace BugTrackerv2.Controllers
             //if the PM/Dev is not apart of this project then not permitted to view this page. re-route user back to index
             //unable to comment or attach anything to this ticket            
             var userId = User.Identity.GetUserId();
-            if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
+            if (User.IsInRole("Administrator"))
+            {
+                ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
+                return View(ticket);
+            }
+            else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
             {
                 var projects = db.Users.FirstOrDefault(u => u.Id == userId).Projects.ToList();           //projects the current user is involved in
                 foreach(var project in projects)
@@ -62,11 +67,7 @@ namespace BugTrackerv2.Controllers
                 ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
                 return View(ticket);
             }
-            else if(User.IsInRole("Administrator"))
-            {
-                ticket.TicketComments = ticket.TicketComments.OrderByDescending(o => o.Created).ToList();
-                return View(ticket);
-            }
+            
 
 
             return RedirectToAction("Index");
@@ -94,7 +95,7 @@ namespace BugTrackerv2.Controllers
         {
             if(file != null && file.ContentLength > 0)
             {
-                var extension = Path.GetExtension(file.FileName);
+                var extension = Path.GetExtension(file.FileName).ToLower();
                 if(extension != ".png" && extension!=".jpg" && extension!=".gif" && extension!=".txt")
                 {
                     ModelState.AddModelError("file", "Invalid format");
@@ -107,7 +108,7 @@ namespace BugTrackerv2.Controllers
                     attachment.Created = System.DateTime.Now;
                     
                     attachment.UserId = User.Identity.GetUserId();
-                    attachment.FilePath = "/attachments/";
+                    attachment.FilePath = "/img/attachments/";
                     var absPath = Server.MapPath("~" + attachment.FilePath);
                     attachment.FileUrl = attachment.FilePath + file.FileName;
                     file.SaveAs(Path.Combine(absPath, file.FileName));
@@ -181,8 +182,9 @@ namespace BugTrackerv2.Controllers
                 var Devs = db.Users.Where(u => u.Roles.Any(r => r.RoleId == (db.Roles.FirstOrDefault(ru => ru.Name == "Developer")).Id));
                 ViewBag.AssignedToUserId = new SelectList(Devs, "Id", "DisplayName", ticket.AssignedToUserId);
             }
+            var userId = User.Identity.GetUserId();
             ViewBag.TicketStatusId = new SelectList(db.TicketStatuses, "TicketStatusId", "Name", ticket.TicketStatusId);
-            ViewBag.ProjectId = new SelectList(db.Projects, "ProjectId", "Name", ticket.ProjectId);
+            ViewBag.ProjectId = new SelectList((db.Users.FirstOrDefault(u => u.Id ==userId).Projects), "ProjectId", "Name", ticket.ProjectId);
             ViewBag.TicketPriorityId = new SelectList(db.TicketPriorities, "TicketPriorityId", "Name", ticket.TicketPriorityId);
             ViewBag.TicketTypeId = new SelectList(db.TicketTypes, "TicketTypeId", "Name", ticket.TicketTypeId);
             return View(ticket);

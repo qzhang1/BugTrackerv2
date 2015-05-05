@@ -7,27 +7,75 @@
     <br />
     <div class="row">
         <div class="col-md-6">
-            <p>Add Users to:</p>
-            @using (Html.BeginForm("AddRole", "Role", FormMethod.Post))
-            {
-                @Html.HiddenFor(model => model.RoleName)
-                @Html.HiddenFor(model => model.RoleId)
-                @Html.AntiForgeryToken()
-                @Html.ListBox("AddedSelect", Model.AddedUsers)
-                <input type="submit" value=">>" class="btn btn-default" />
-            }
+            <h4>Search Users</h4>
+            <div class="head-search">
+                @using (Html.BeginForm())
+                {
+
+                    <div class="input-group">
+                        @Html.TextBox("query", "", new { @class = "form-control", placeholder = "Search..." })
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit">
+                                <i class="fa fa-search"></i>
+                            </button>
+                        </span>
+                    </div>
+
+                }
+            </div>
         </div>
-        <div class="col-md-6">
-            <p>Delete Users from:</p>
-            @using (Html.BeginForm("DeleteRole", "Role", FormMethod.Post))
-            {
-                @Html.HiddenFor(model => model.RoleName)
-                @Html.HiddenFor(model => model.RoleId)
-                @Html.AntiForgeryToken()
-                @Html.ListBox("DeletedSelect", Model.DeletedUsers)
-                <input type="submit" value="<<" class="btn btn-default" />
-            }
-        </div>
-        <a href="@Url.Action("Index")">Back to Index</a>
     </div>
+
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+
+                    <h4><strong>Instructions:</strong></h4>
+                    <span>To select multiple users hold Shift + Up/Down and to unselect a user hold Ctrl + Click</span>
+
+                    <br />
+                </div>
+                <div class="panel-body">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p>Add Users to:</p>
+                                @using (Html.BeginForm("AddRole", "Role", FormMethod.Post))
+                        {
+                        @Html.HiddenFor(model => model.RoleName)
+                        @Html.HiddenFor(model => model.RoleId)
+                        @Html.AntiForgeryToken()
+                        @Html.ListBox("AddedSelect", Model.AddedUsers)
+                        <br />
+                        <input type="submit" value=">>" class="btn btn-default" />
+                        }
+                            </div>
+                            <div class="col-md-6">
+                                <p>Delete Users from:</p>
+                                @using (Html.BeginForm("DeleteRole", "Role", FormMethod.Post))
+                        {
+                        @Html.HiddenFor(model => model.RoleName)
+                        @Html.HiddenFor(model => model.RoleId)
+                        @Html.AntiForgeryToken()
+                        @Html.ListBox("DeletedSelect", Model.DeletedUsers)
+                        <br />
+                        <input type="submit" value="<<" class="btn btn-default" />
+                        }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <br />
+    <div class="row">
+        <div class="col-md-12">
+            <a href="@Url.Action("Index")">Back to Index</a>
+        </div>
+    </div>
+
 </div>

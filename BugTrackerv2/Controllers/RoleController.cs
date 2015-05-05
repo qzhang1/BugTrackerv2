@@ -19,25 +19,35 @@ namespace BugTrackerv2.Controllers
         // Display a list of Roles and users currently in that role
         public ActionResult Index()
         {
-            List<SelectListItem> items = new List<SelectListItem>();
+            
 
             var roles = db.Roles.ToList();
             var users = db.Users.ToList();
-            
+           
             //items.Add(new SelectListItem { Text = users });
             var model = new UserRoleViewModel
             {
                 UserList = users,
-                RoleList = roles
+                RoleList = roles,                
             };
+            var roless = db.Users.Where(u => u.Roles.All(r => r.UserId != u.Id)).ToList();
+            ViewBag.noRole = new MultiSelectList(db.Users.Where(u => u.Roles.All(r => r.UserId!= u.Id)), "Id", "DisplayName");
+
             return View(model);
         }
 
-        public ActionResult EditRole(string RoleName)
+        public ActionResult EditRole(string RoleName, string query)
         {
             var usersinRole = helper.UsersInRole(RoleName);
             var usersnotinRole = helper.UsersNotInRole(RoleName);
-            //contains a list of ppl not in role to be added
+
+            if(query != null)
+            {
+                ViewBag.query = query;
+                usersnotinRole = usersnotinRole.Where(s => s.UserName.Contains(query)).ToList();
+                usersinRole = usersinRole.Where(s => s.UserName.Contains(query)).ToList();
+            }
+
             var ToBeAdded = new MultiSelectList(usersnotinRole, "Id", "UserName");
             var ToBeRemoved = new MultiSelectList(usersinRole, "Id", "UserName");
             var model = new UnifiedRoleView

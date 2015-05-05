@@ -3,44 +3,28 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2>Role Table</h2>
 <table class="table">
     <thead>
         <tr>
-            <th>Roles</th>
-            <th>Users</th>
+            <th>Roles</th>           
             <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach(var role in Model.RoleList)
         {
-            int userCount = 1;
+            
             <tr>
-                <th>@role.Name</th>
-                <th>
-                    <p>
-                        @foreach(var user in Model.UserList)
-                        {
-                            userCount++; 
-                            if(user.Roles.Any(r => r.RoleId == role.Id))
-                            {
-                                @user.DisplayName
-                                if(userCount > 1)
-                                {
-                                    <span> &nbsp; </span>
-                                }                                
-                            }
-                            if(userCount > 3)
-                            {
-                                <p></p>
-                            }
-                                         
-                        }
-                    </p>
-                </th>
-                <th><a href="@Url.Action("EditRole","Role", new { RoleName = role.Name})">Edit Role</a></th>
+                <td>@role.Name</td>
+                <td><a href="@Url.Action("EditRole","Role", new { RoleName = role.Name})">Add Users</a></td>
             </tr>
-        }
+        }        
     </tbody>
+    <tfoot>
+        <tr>
+            <td>Users without roles</td>
+            <td>@Html.ListBox("noRole", null, htmlAttributes: new {})</td>
+        </tr>
+    </tfoot>
 </table>

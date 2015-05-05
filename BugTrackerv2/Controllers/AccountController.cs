@@ -9,7 +9,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using BugTrackerv2.Models;
-
+using BugTrackerv2.Models.CustomViewModels;
 namespace BugTrackerv2.Controllers
 {
     [Authorize]
@@ -101,7 +101,7 @@ namespace BugTrackerv2.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(UserLoginRegisterViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -110,7 +110,7 @@ namespace BugTrackerv2.Controllers
 
             // This doesn't count login failures towards account lockout
             // To enable password failures to trigger account lockout, change to shouldLockout: true
-            var result = await SignInManager.PasswordSignInAsync(model.Email, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await SignInManager.PasswordSignInAsync(model.login.Email, model.login.Password, model.login.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -118,7 +118,7 @@ namespace BugTrackerv2.Controllers
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
-                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.RememberMe });
+                    return RedirectToAction("SendCode", new { ReturnUrl = returnUrl, RememberMe = model.login.RememberMe });
                 case SignInStatus.Failure:
                 default:
                     ModelState.AddModelError("", "Invalid login attempt.");
@@ -182,12 +182,12 @@ namespace BugTrackerv2.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model)
+        public async Task<ActionResult> Register(UserLoginRegisterViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email, DisplayName = model.DisplayName };
-                var result = await UserManager.CreateAsync(user, model.Password);
+                var user = new ApplicationUser { UserName = model.register.Email, Email = model.register.Email, DisplayName = model.register.DisplayName };
+                var result = await UserManager.CreateAsync(user, model.register.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
@@ -203,7 +203,7 @@ namespace BugTrackerv2.Controllers
                     var mail = new IdentityMessage
                     {
                         Subject = "Account Confirmation",
-                        Destination = model.Email,
+                        Destination = model.register.Email,
                         Body = "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>"
                     };
                     await Emailer.SendAsync(mail);
