@@ -4,102 +4,104 @@
     ViewBag.Title = "Index";
 }
 <br /><br />
-<h2>Index</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Index</h2>
+            <p>
+                @Html.ActionLink("Create New", "Create")
+            </p>
+        </div>
+    </div>
+</div>
+    <table class="table table-striped table-bordered" cellspacing="0" width="100%" id="index" style="margin-left: 8px;">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    Project
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    Type
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    Status
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    Priority
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Created)
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Updated)
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    Owner
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>
+                    Assignee
+                    <i class="fa fa-fw fa-sort"></i>
+                </th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.project.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketType.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketStatus.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Created)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Updated)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OwnerUser.UserName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssignedToUser.UserName)
+                </td>
 
-<style>
-    .glyphicon{
-        padding-left: 40px;
-    }
-</style>
-<table class="table table-striped table-bordered" cellspacing="0" width="100%" id="index">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Title)
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                Project
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                Type
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                Status
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                Priority
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Created)
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Updated)
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                Owner
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>
-                Assignee
-                <i class="fa fa-fw fa-sort"></i>
-            </th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.project.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketType.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketStatus.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Created)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Updated)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.OwnerUser.UserName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.AssignedToUser.UserName)
-        </td>
-        
-        <td>
-            @Html.ActionLink("Details", "Details", new { id = item.TicketId }) 
-            @if (!User.IsInRole("Submitter"))
-            {
-                <span> |
-                    @Html.ActionLink("Edit", "Edit", new { id = item.TicketId }) |
-                    @Html.ActionLink("Delete", "Delete", new { id = item.TicketId })
-                </span>
-            }
-            
-        </td>
-    </tr>
-}
+                <td>
+                    @Html.ActionLink("Details", "Details", new { id = item.TicketId })
+                    @if (!User.IsInRole("Submitter"))
+                    {
+                        <span>
+                            |
+                            @Html.ActionLink("Edit", "Edit", new { id = item.TicketId }) |
+                            @Html.ActionLink("Delete", "Delete", new { id = item.TicketId })
+                        </span>
+                    }
 
-</table>
+                </td>
+            </tr>
+        }
+
+    </table>
 

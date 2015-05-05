@@ -233,6 +233,7 @@
     <Content Include="css\jquery.gritter.css" />
     <Content Include="css\jquery.onoff.css" />
     <Content Include="css\less-style.css" />
+    <Content Include="css\multi-select.css" />
     <Content Include="css\prettify.css" />
     <Content Include="css\prettyPhoto.css" />
     <Content Include="css\rateit.css" />
@@ -289,6 +290,8 @@
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Icon.png" />
     <Content Include="img\attachments\motor_control_ckt.jpg" />
+    <Content Include="img\switch.png" />
+    <Content Include="Scripts\jquery.multi-select.js" />
     <Content Include="templatescripts\bootstrap-datetimepicker.min.js" />
     <Content Include="templatescripts\bootstrap-wysihtml5.min.js" />
     <Content Include="templatescripts\bootstrap.js" />

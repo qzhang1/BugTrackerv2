@@ -71,24 +71,25 @@ namespace BugTrackerv2.Controllers
             var Dev_Id = db.Roles.Single(r => r.Name == "Developer").Id;
 
             List<ApplicationUser> UsersNotOnProject ;
-            List<ApplicationUser> UsersOnProject;
+            List<string> UsersOnProject;
             if(User.IsInRole("Administrator"))
             {
                  UsersNotOnProject = helper.ListUsersNotOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).ToList();
-                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).ToList();
+                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).Select(dn => dn.DisplayName).ToList();
             }
             else
             {
                  UsersNotOnProject = helper.ListUsersNotOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).ToList();
-                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).ToList();
+                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).Select(dn => dn.DisplayName).ToList();
             }
+
+            var displaynames = db.Users.Select(u => u.DisplayName).Where(n => n == "Qi Zhang");
             
             var model = new EditProjectViewModel
             {
                 projectName = project.Name,
                 projectId = project.ProjectId,
-                UsersToBeAdded = new MultiSelectList(UsersNotOnProject, "Id", "DisplayName"),
-                UsersToBeRemoved = new MultiSelectList(UsersOnProject, "Id", "DisplayName"),
+                UsersToBeAdded = new MultiSelectList(UsersNotOnProject, "Id", "DisplayName",null,UsersOnProject),                
 
             };
             return View(model);
