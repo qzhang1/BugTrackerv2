@@ -69,27 +69,27 @@ namespace BugTrackerv2.Controllers
             Project project = db.Projects.Include(p => p.Users).FirstOrDefault(pr => pr.ProjectId == id);
             var PM_Id = db.Roles.Single(r => r.Name == "Project Manager").Id;
             var Dev_Id = db.Roles.Single(r => r.Name == "Developer").Id;
-
-            List<ApplicationUser> UsersNotOnProject ;
-            List<string> UsersOnProject;
+            
+            IEnumerable<ApplicationUser>listofusers;
+            IEnumerable<string> UsersOnProject;
             if(User.IsInRole("Administrator"))
             {
-                 UsersNotOnProject = helper.ListUsersNotOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).ToList();
-                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).Select(dn => dn.DisplayName).ToList();
+                listofusers = db.Users.Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id));           //list of users who are PMs and Devs
+                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == PM_Id || r.RoleId == Dev_Id)).Select(dn => dn.Id);
             }
             else
             {
-                 UsersNotOnProject = helper.ListUsersNotOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).ToList();
-                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).Select(dn => dn.DisplayName).ToList();
+                listofusers = db.Users.Where(u => u.Roles.Any(r => r.RoleId == Dev_Id));                                //list of users who are Devs
+                 UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).Select(dn => dn.Id);    //list users on project who are developers
             }
-
-            var displaynames = db.Users.Select(u => u.DisplayName).Where(n => n == "Qi Zhang");
+            TempData["project"] = project;
             
-            var model = new EditProjectViewModel
+         
+            var model = new testingsometingViewModel
             {
                 projectName = project.Name,
                 projectId = project.ProjectId,
-                UsersToBeAdded = new MultiSelectList(UsersNotOnProject, "Id", "DisplayName",null,UsersOnProject),                
+                Users = new MultiSelectList(listofusers, "Id", "DisplayName",UsersOnProject)               
 
             };
             return View(model);
@@ -101,26 +101,32 @@ namespace BugTrackerv2.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles="Administrator, Project Manager")]
-        public ActionResult Edit(EditProjectViewModel model)
+        public ActionResult Edit(testingsometingViewModel model)
         {
             if (ModelState.IsValid)
             {
                 //track current project via projectId and change it's name
-                var project = db.Projects.Single(u => u.ProjectId == model.projectId);
+                var project = db.Projects.Include(u => u.Users).FirstOrDefault(p => p.ProjectId == model.projectId);
                 project.Name = model.projectName; 
 
                 //check what multiselectlists are selected and accomplish the associated tasks
                 //add/remove project managers
-                if (model.SelectUsersToAdd != null)
-                {
-                    foreach (string id in model.SelectUsersToAdd)
-                        helper.AddUsersToProject(id, model.projectId);
-                }
-                if (model.SelectUsersToRemove != null)
-                {
-                    foreach (string id in model.SelectUsersToRemove)
-                        helper.RemoveUserFromProject(id, model.projectId);
-                }                
+                
+                    foreach (var user in db.Users)
+                    {                        
+
+                        if(model.selected.Contains(user.Id))
+                           {
+                               helper.AddUsersToProject(user.Id, project.ProjectId);
+                           }
+                           else 
+                           {
+                               helper.RemoveUserFromProject(user.Id, project.ProjectId);
+                           }
+                       
+                    }
+                
+                             
 
                 db.Entry(project).State = EntityState.Modified;
                 db.SaveChanges();

@@ -4,7 +4,7 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Project Table</h2>
+<h2><img style="padding-bottom:10px;"src="~/img/projects_folder.png" /><span style="padding-top:10px;">Projects</span></h2>
 @if (User.IsInRole("Administrator"))
 {
     <p>
@@ -15,7 +15,7 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            Project Name
         </th>
         <th>
             <p>Created On</p>

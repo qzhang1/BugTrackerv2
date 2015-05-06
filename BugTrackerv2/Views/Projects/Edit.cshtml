@@ -1,4 +1,4 @@
-﻿@model BugTrackerv2.Models.CustomViewModels.EditProjectViewModel
+﻿@model BugTrackerv2.Models.CustomViewModels.testingsometingViewModel
 
 @{
     ViewBag.Title = "Edit";
@@ -55,7 +55,7 @@
                                     <p>Add to Project</p>
 
                                     @Html.HiddenFor(model => model.projectId)
-                                    @Html.ListBox("SelectUsersToAdd", Model.UsersToBeAdded, htmlAttributes: new { @multiple="multiple",id="my-select"})
+                                    @Html.ListBox("selected", Model.Users, htmlAttributes: new { @multiple="multiple",id="my-select"})
                                     
 
                                 </div>

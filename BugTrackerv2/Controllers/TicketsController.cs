@@ -203,6 +203,40 @@ namespace BugTrackerv2.Controllers
             {
                 //ticket.OwnerUserId = db.Users.FirstOrDefault(u => u.Id == OwnerId).Id;
                 //ticket.Owner = db.Users.FirstOrDefault(u => u.Id == ticket.OwnerUserId);
+                /*
+                 * Ticket history algorithm:
+                 * get oldticket data
+                 * for each property
+                 *      compare values of oldticket to ticket
+                 *      if different
+                 *          make new tickethistory
+                 *          add to db.history
+                 * save changes to db.history
+                 * */
+                /*
+                var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.TicketId == ticket.TicketId);
+                var EditId = Guid.NewGuid().ToString();
+                if(oldTicket.AssignedToUserId != ticket.AssignedToUserId)
+                {
+                    var AssignedHistory = new TicketHistory
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = User.Identity.GetUserId(),
+                        Property = "AssignedUserId",
+                        OldValue = oldTicket.AssignedToUserId,
+                        NewValue = ticket.AssignedToUserId,
+                        Change = System.DateTimeOffset.Now,
+                    };
+                    db.TicketHistories.Add(AssignedHistory);
+                    //fire off notification to user
+                    var user = db.Users.Find(User.Identity.GetUserId());
+                    new EmailService().SendAsync(new IdentityMessage
+                        {
+                            Subject = "You've been assigned a new ticket",
+                            Destination = user.Email,
+                            Body = "There is a disturbance in the force"
+                        });
+                }*/
 
                 ticket.Updated = System.DateTime.Now;
                 db.Entry(ticket).State = EntityState.Modified;

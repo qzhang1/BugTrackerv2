@@ -17,110 +17,76 @@
     @RenderSection("css", false)
 
 </head>
-<body>
-    @*
-    <div class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    @if (User.IsInRole("Administrator"))
-                    {
-
-                        <li>
-                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true" href="#">Admin<span class="caret"></span></a>
-                            <ul class="dropdown-menu" role="menu">
-                                <li>@Html.ActionLink("Roles", "Index", "Role")</li>
-                                <li><a href="@Url.Action("Index","Projects")">Projects</a></li>
-                            </ul>
-                        </li>
-
-                    }
-                    else if(User.IsInRole("Project Manager") || User.IsInRole("Developer"))
-                    {
-                        <li>@Html.ActionLink("Projects","Index","Projects")</li>
-
-                    }
-                    @if(User.Identity.IsAuthenticated)
-                    {
-                        <li><a href="@Url.Action("Index","Tickets")">Tickets</a></li>
-                    }
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                </ul>
-                @Html.Partial("_LoginPartial")
-            </div>
-        </div>
-    </div>
-    *@
+<body>    
     <div class="outer">
         <div class="sidebar">
-            <div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
-            <div class="side-nav">
-
-                <div class="side-nav-block">
-                    <!-- Sidebar heading -->
-                    <h4>Main</h4>
-                    <!-- Sidebar links -->
-                    <ul class="list-unstyled">
-                        <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-desktop"></i> Dashboard</a></li>                                                                        
-                        @if (User.IsInRole("Administrator"))
+            <div class="sidey">
+                <div class="logo">
+                    <h1>
+                        <a href="@Url.Action("Index","Home")">
+                            <i class="fa fa-desktop br-red"></i>
+                            Dash
+                        </a>
+                    </h1>
+                </div>
+                <div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
+                <div class="side-nav">
+                    <div class="side-nav-block">
+                        <!-- Sidebar heading -->
+                        <h4>Main</h4>
+                        <!-- Sidebar links -->
+                        <ul class="list-unstyled">
+                            <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-desktop"></i> Dashboard</a></li>
+                            @if (User.IsInRole("Administrator"))
                         {
                             <!-- Mainmenu with submenu -->
-                            <li class="has_submenu">
-                                <a href="#"><i class="fa fa-user"></i> Admin <span class="nav-caret fa fa-caret-down"></span></a>
-                                <!-- Submenu -->
-                                <ul class="list-unstyled">
-                                    <li><a href="@Url.Action("Index","Role")"><i class="fa fa-angle-double-right"></i> Roles</a></li>
-                                    <li><a href="@Url.Action("Index","Projects")"><i class="fa fa-angle-double-right"></i> Projects</a></li>
-                                </ul>
-                            </li>
+                                <li class="has_submenu">
+                                    <a href="#"><i class="fa fa-user"></i> Admin <span class="nav-caret fa fa-caret-down"></span></a>
+                                    <!-- Submenu -->
+                                    <ul class="list-unstyled">
+                                        <li><a href="@Url.Action("Index","Role")"><i class="fa fa-angle-double-right"></i> Roles</a></li>
+                                        <li><a href="@Url.Action("Index","Projects")"><i class="fa fa-angle-double-right"></i> Projects</a></li>
+                                    </ul>
+                                </li>
                         }
                         else if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
                         {
                             <li><a href="@Url.Action("Index","Projects")"><i class="fa fa-file-code-o"></i> Project</a></li>
                         }
-                        @if (User.Identity.IsAuthenticated)
+                            @if (User.Identity.IsAuthenticated)
                         {
                             <!-- Mainmenu with submenu -->
+                                <li class="has_submenu">
+                                    <a href="#"><i class="icon-ticket"></i> Tickets <span class="nav-caret fa fa-caret-down"></span></a>
+                                    <!-- Submenu -->
+                                    <ul class="list-unstyled">
+                                        <li><a href="@Url.Action("Index","Tickets")"><i class="fa fa-angle-double-right"></i> Ticket table</a></li>
+                                        <li><a href="form-validate.html"><i class="fa fa-angle-double-right"></i> Calendar</a></li>
+                                    </ul>
+                                </li>
+                        }
+
+
+                            <!-- Mainmenu with submenu -->
                             <li class="has_submenu">
-                                <a href="#"><i class="icon-ticket"></i> Tickets <span class="nav-caret fa fa-caret-down"></span></a>
+                                <a href="#"><i class="fa fa-envelope"></i> Contact <span class="nav-caret fa fa-caret-down"></span></a>
                                 <!-- Submenu -->
                                 <ul class="list-unstyled">
-                                    <li><a href="@Url.Action("Index","Tickets")"><i class="fa fa-angle-double-right"></i> Ticket table</a></li>
-                                    <li><a href="form-validate.html"><i class="fa fa-angle-double-right"></i> Calendar</a></li>
+                                    <li><a href="inbox.html"><i class="fa fa-angle-double-right"></i> Inbox</a></li>
+                                    <li><a href="mail-read.html"><i class="fa fa-angle-double-right"></i> Mail Read</a></li>
+                                    <li><a href="mail-write.html"><i class="fa fa-angle-double-right"></i> Mail Compose</a></li>
                                 </ul>
                             </li>
-                        }
-                        
-                        
-                        <!-- Mainmenu with submenu -->
-                        <li class="has_submenu">
-                            <a href="#"><i class="fa fa-envelope"></i> Contact <span class="nav-caret fa fa-caret-down"></span></a>
-                            <!-- Submenu -->
-                            <ul class="list-unstyled">
-                                <li><a href="inbox.html"><i class="fa fa-angle-double-right"></i> Inbox</a></li>
-                                <li><a href="mail-read.html"><i class="fa fa-angle-double-right"></i> Mail Read</a></li>
-                                <li><a href="mail-write.html"><i class="fa fa-angle-double-right"></i> Mail Compose</a></li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
+                        </ul>
+                    </div>
 
-                <div class="side-nav-block">
-                    <h4>Menu</h4>
-                    <ul class="list-unstyled">                        
-                        <li><a href="@Url.Action("Login","Account")"><i class="fa fa-sign-in"></i> Login</a></li>                                                
-                        <li><a href="lock.html"><i class="fa fa-lock"></i> Lock</a></li>
-                    </ul>
+                    <div class="side-nav-block">
+                        <h4>Menu</h4>
+                        <ul class="list-unstyled">
+                            <li><a href="@Url.Action("Login","Account")"><i class="fa fa-sign-in"></i> Login</a></li>
+                            <li><a href="lock.html"><i class="fa fa-lock"></i> Lock</a></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </div>

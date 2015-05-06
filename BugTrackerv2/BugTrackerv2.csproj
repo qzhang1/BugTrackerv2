@@ -179,6 +179,7 @@
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CustomViewModels\EditProjectViewModel.cs" />
     <Compile Include="Models\CustomViewModels\ProjectUserViewModel.cs" />
+    <Compile Include="Models\CustomViewModels\testingsometingViewModel.cs" />
     <Compile Include="Models\CustomViewModels\TicketDisplayViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UnifiedRoleViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserDisplayViewModel.cs" />
@@ -290,6 +291,7 @@
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Icon.png" />
     <Content Include="img\attachments\motor_control_ckt.jpg" />
+    <Content Include="img\projects_folder.png" />
     <Content Include="img\switch.png" />
     <Content Include="Scripts\jquery.multi-select.js" />
     <Content Include="templatescripts\bootstrap-datetimepicker.min.js" />
