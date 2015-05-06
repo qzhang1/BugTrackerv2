@@ -13,6 +13,8 @@ namespace BugTrackerv2.Models.TicketFolder
         {
             this.TicketAttachments = new HashSet<TicketAttachment>();
             this.TicketComments = new HashSet<TicketComment>();
+            this.TicketHistories = new HashSet<TicketHistory>();
+            this.TicketNotifications = new HashSet<TicketNotification>();
         }
 
         //data properties
@@ -46,6 +48,8 @@ namespace BugTrackerv2.Models.TicketFolder
         public virtual ApplicationUser AssignedToUser { get; set; }
         public virtual ICollection<TicketAttachment> TicketAttachments { get; set; }
         public virtual ICollection<TicketComment> TicketComments { get; set; }
+        public virtual ICollection<TicketHistory> TicketHistories { get; set; }
+        public virtual ICollection<TicketNotification> TicketNotifications { get; set; }
 
     }
 }

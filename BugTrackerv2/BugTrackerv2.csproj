@@ -185,6 +185,7 @@
     <Compile Include="Models\CustomViewModels\UserDisplayViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserLoginRegisterViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserRoleViewModel.cs" />
+    <Compile Include="Models\HelperFolder\MakeHistory.cs" />
     <Compile Include="Models\HelperFolder\UserProjectsHelper.cs" />
     <Compile Include="Models\HelperFolder\UserRolesHelper.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -193,6 +194,7 @@
     <Compile Include="Models\TicketFolder\Ticket.cs" />
     <Compile Include="Models\TicketFolder\TicketAttachment.cs" />
     <Compile Include="Models\TicketFolder\TicketComment.cs" />
+    <Compile Include="Models\TicketFolder\TicketHistory.cs" />
     <Compile Include="Models\TicketFolder\TicketNotification.cs" />
     <Compile Include="Models\TicketFolder\TicketPriority.cs" />
     <Compile Include="Models\TicketFolder\TicketStatus.cs" />

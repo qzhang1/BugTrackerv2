@@ -11,11 +11,10 @@
 </style>
 <div class="container">
     <div class="row">    
-        <h2>Details</h2>    
-        
-            
-            
+           
+
         <div class="col-md-12">
+            <h2>Details</h2> 
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h4>Ticket</h4>
@@ -124,8 +123,8 @@
                 <!--Nav Tabs-->
                 <ul class="nav nav-tabs" role="tablist">
                     <li role="presentation" class="active"><a href="#attachments" aria-controls="home" role="tab" data-toggle="tab">Attachments</a></li>
-                    <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Comments</a></li>
-                    <li role="presentation"><a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">History</a></li>
+                    <li role="presentation"><a href="#comments" aria-controls="profile" role="tab" data-toggle="tab">Comments</a></li>
+                    <li role="presentation"><a href="#histories" aria-controls="messages" role="tab" data-toggle="tab">History</a></li>
                     
                 </ul>
                 <!-- Tab panes -->
@@ -179,7 +178,7 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="profile">
+                    <div role="tabpanel" class="tab-pane" id="comments">
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-4">
@@ -220,7 +219,39 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="messages">...</div>
+                    <div role="tabpanel" class="tab-pane" id="histories">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <h4>Ticket Histories</h4>
+                                    <hr />
+                                    <table class="table-striped" width="100%">
+                                        <thead>
+                                            <tr>        
+                                                <th>Changed</th>                                        
+                                                <th>Edited By</th>
+                                                <th>Changed On</th>                                                
+                                                <th>Old Value</th>
+                                                <th>New Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var history in Model.TicketHistories)
+                                            {
+                                                <tr>      
+                                                    <td>@history.Property</td>                                              
+                                                    <td>@history.User.DisplayName</td>
+                                                    <td>@history.Change</td>                                                    
+                                                    <td>@history.OldValue</td>
+                                                    <td>@history.NewValue</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div role="tabpanel" class="tab-pane" id="settings">...</div>
                 </div>
 

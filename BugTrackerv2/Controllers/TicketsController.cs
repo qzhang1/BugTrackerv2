@@ -11,6 +11,10 @@ using BugTrackerv2.Models.TicketFolder;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNet.Identity;
 using System.IO;
+using System.Text;
+using SendGrid;
+using System.Net.Mail;
+using System.Net;
 namespace BugTrackerv2.Controllers
 {
     public class TicketsController : Controller
@@ -22,11 +26,11 @@ namespace BugTrackerv2.Controllers
         {
             var userId = User.Identity.GetUserId();
             if (User.IsInRole("Administrator"))
-                return View(db.Tickets.ToList());
+                return View(db.Tickets.OrderByDescending(c => c.Created).ToList());
             else if (User.IsInRole("Submitter"))
-                return View(db.Tickets.Where(t => t.OwnerUserId == userId).ToList());
+                return View(db.Tickets.Where(t => t.OwnerUserId == userId).OrderByDescending(c => c.Created).ToList());
             else
-                return View((db.Tickets.Where(t => t.project.Users.Any(u => u.Id == userId))).ToList());
+                return View((db.Tickets.Where(t => t.project.Users.Any(u => u.Id == userId)).OrderByDescending(c => c.Created)).ToList());
         }
 
         // GET: Tickets/Details/5
@@ -201,8 +205,7 @@ namespace BugTrackerv2.Controllers
 
             if (ModelState.IsValid)
             {
-                //ticket.OwnerUserId = db.Users.FirstOrDefault(u => u.Id == OwnerId).Id;
-                //ticket.Owner = db.Users.FirstOrDefault(u => u.Id == ticket.OwnerUserId);
+                
                 /*
                  * Ticket history algorithm:
                  * get oldticket data
@@ -213,37 +216,157 @@ namespace BugTrackerv2.Controllers
                  *          add to db.history
                  * save changes to db.history
                  * */
-                /*
+                
                 var oldTicket = db.Tickets.AsNoTracking().FirstOrDefault(t => t.TicketId == ticket.TicketId);
+                //unique identifier to identify all the changes made by the user at once
                 var EditId = Guid.NewGuid().ToString();
+                var UserId = User.Identity.GetUserId();
+
+
+                //tests for changes in AssignedTouserId
                 if(oldTicket.AssignedToUserId != ticket.AssignedToUserId)
                 {
                     var AssignedHistory = new TicketHistory
                     {
                         TicketId = ticket.TicketId,
-                        UserId = User.Identity.GetUserId(),
-                        Property = "AssignedUserId",
-                        OldValue = oldTicket.AssignedToUserId,
-                        NewValue = ticket.AssignedToUserId,
+                        UserId = UserId,
+                        Property = "Assigned To",
+                        OldValue = (oldTicket.AssignedToUserId == null? "Not yet assigned" : db.Users.FirstOrDefault(u => u.Id == oldTicket.AssignedToUserId).DisplayName),
+                        NewValue = db.Users.FirstOrDefault(u => u.Id == ticket.AssignedToUserId).DisplayName,
                         Change = System.DateTimeOffset.Now,
                     };
                     db.TicketHistories.Add(AssignedHistory);
-                    //fire off notification to user
-                    var user = db.Users.Find(User.Identity.GetUserId());
+                    
+                    //make a notification to developer that they've been assigned to a ticket
+                    var notification = new TicketNotification
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = ticket.AssignedToUserId,
+                        message = "You've been assigned to ticket titled " + ticket.Title
+                    };
+                    db.TicketNotifications.Add(notification);
                     new EmailService().SendAsync(new IdentityMessage
-                        {
-                            Subject = "You've been assigned a new ticket",
-                            Destination = user.Email,
-                            Body = "There is a disturbance in the force"
-                        });
-                }*/
+                    {
+                        Subject = "You've been assigned a ticket",
+                        Destination = db.Users.FirstOrDefault(u => u.Id == ticket.AssignedToUserId).Email,
+                        Body = "You've been assigned to ticket titled " + ticket.Title + "."
 
+                    });
+
+                }
+
+                if(oldTicket.Description != ticket.Description)
+                {
+                    var ChangedDescription = new TicketHistory
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = UserId,
+                        Property = "Description",
+                        OldValue = oldTicket.Description,
+                        NewValue = ticket.Description,
+                        Change = System.DateTimeOffset.Now,
+                    };
+                    db.TicketHistories.Add(ChangedDescription);
+
+                    //make a notification that the submitter or whoever has changed the description of the ticket
+                    if(ticket.AssignedToUserId != UserId)
+                    {
+                        var notification = new TicketNotification
+                        {
+                            TicketId = ticket.TicketId,
+                            UserId = ticket.AssignedToUserId,
+                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedDescription.Property + " from " + ChangedDescription.OldValue + " to " + ChangedDescription.NewValue
+                        };
+                        db.TicketNotifications.Add(notification);
+                    }
+                    
+                }
+
+                if (oldTicket.ProjectId != ticket.ProjectId)
+                {
+                    var ChangedProject = new TicketHistory
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = UserId,
+                        Property = "Project",
+                        OldValue = db.Projects.FirstOrDefault(p => p.ProjectId == oldTicket.ProjectId).Name,
+                        NewValue = db.Projects.FirstOrDefault(p => p.ProjectId == ticket.ProjectId).Name,
+                        Change = System.DateTimeOffset.Now,
+                    };
+                    db.TicketHistories.Add(ChangedProject);
+                    var notification = new TicketNotification
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = ticket.AssignedToUserId,
+                        message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedProject.Property + " from " + ChangedProject.OldValue + " to " + ChangedProject.NewValue
+                    };
+                    db.TicketNotifications.Add(notification);
+                    
+                }
+
+                if(oldTicket.TicketPriorityId != ticket.TicketPriorityId)
+                {
+                    var ChangedPriority = new TicketHistory
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = UserId,
+                        Property = "Ticket Priority",
+                        OldValue = db.TicketPriorities.FirstOrDefault(p => p.TicketPriorityId == oldTicket.TicketPriorityId).Name,
+                        NewValue = db.TicketPriorities.FirstOrDefault(p => p.TicketPriorityId == ticket.TicketPriorityId).Name,
+                        Change = System.DateTimeOffset.Now,
+                    };
+                    db.TicketHistories.Add(ChangedPriority);
+                    if(ticket.AssignedToUserId != UserId)
+                    {
+                        var notification = new TicketNotification
+                        {
+                            TicketId = ticket.TicketId,
+                            UserId = ticket.AssignedToUserId,
+                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedPriority.Property + " from " + ChangedPriority.OldValue + " to " + ChangedPriority.NewValue
+
+                        };
+                        db.TicketNotifications.Add(notification);
+                    }
+
+                }
+
+                if (oldTicket.TicketStatusId != ticket.TicketStatusId)
+                {
+                    var ChangedStatus = new TicketHistory
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = UserId,
+                        Property = "Ticket Status",
+                        OldValue = db.TicketStatuses.FirstOrDefault(p => p.TicketStatusId == oldTicket.TicketStatusId).Name,
+                        NewValue = db.TicketStatuses.FirstOrDefault(p => p.TicketStatusId == ticket.TicketStatusId).Name,
+                        Change = System.DateTimeOffset.Now,
+                    };
+                    db.TicketHistories.Add(ChangedStatus);
+                   
+                }
+
+                if (oldTicket.TicketTypeId != ticket.TicketTypeId)
+                {
+                    var ChangedType = new TicketHistory
+                    {
+                        TicketId = ticket.TicketId,
+                        UserId = UserId,
+                        Property = "Ticket Type",
+                        OldValue = db.TicketTypes.FirstOrDefault(p => p.TicketTypeId == oldTicket.TicketTypeId).Name,
+                        NewValue = db.TicketTypes.FirstOrDefault(p => p.TicketTypeId == ticket.TicketTypeId).Name,
+                        Change = System.DateTimeOffset.Now,
+                    };
+                    db.TicketHistories.Add(ChangedType);
+                    
+                }
+            
                 ticket.Updated = System.DateTime.Now;
                 db.Entry(ticket).State = EntityState.Modified;
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
 
+            //remake form with selected options to display 
             if (User.IsInRole("Administrator") || User.IsInRole("Project Manager"))
             {
                 var Devs = db.Users.Where(u => u.Roles.Any(r => r.RoleId == (db.Roles.FirstOrDefault(ru => ru.Name == "Developer")).Id));
