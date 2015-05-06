@@ -3,8 +3,11 @@
 @{
     ViewBag.Title = "Details";
 }
+<div class="single-head">
+    <h2 class="pull-left">Details</h2>
+    <div class="clearfix"></div>
+</div>
 
-<h2>Details</h2>
 
 <br /><br />
 <div class="container">
@@ -16,7 +19,7 @@
     <br />
     <div class="row">
         <div class="col-md-5">
-            <table>
+            <table class="table-striped" border="1">
                 <tr><th>Project Managers</th></tr>
                 @foreach (var user in Model.PM)
                 {
@@ -25,7 +28,7 @@
             </table>
         </div>
         <div class="col-md-5">
-            <table>
+            <table class="table-striped" border="1">
                 <tr><th>Developers</th></tr>
                 @foreach (var user in Model.Devs)
                 {

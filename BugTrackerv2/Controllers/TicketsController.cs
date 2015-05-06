@@ -14,7 +14,7 @@ using System.IO;
 using System.Text;
 using SendGrid;
 using System.Net.Mail;
-using System.Net;
+
 namespace BugTrackerv2.Controllers
 {
     public class TicketsController : Controller
@@ -242,7 +242,8 @@ namespace BugTrackerv2.Controllers
                     {
                         TicketId = ticket.TicketId,
                         UserId = ticket.AssignedToUserId,
-                        message = "You've been assigned to ticket titled " + ticket.Title
+                        message = "You've been assigned to ticket titled " + ticket.Title,
+                        Created = System.DateTime.Now
                     };
                     db.TicketNotifications.Add(notification);
                     new EmailService().SendAsync(new IdentityMessage
@@ -275,7 +276,8 @@ namespace BugTrackerv2.Controllers
                         {
                             TicketId = ticket.TicketId,
                             UserId = ticket.AssignedToUserId,
-                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedDescription.Property + " from " + ChangedDescription.OldValue + " to " + ChangedDescription.NewValue
+                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedDescription.Property + " from " + ChangedDescription.OldValue + " to " + ChangedDescription.NewValue,
+
                         };
                         db.TicketNotifications.Add(notification);
                     }
@@ -407,7 +409,13 @@ namespace BugTrackerv2.Controllers
             return RedirectToAction("Index");
         }
 
-
+        [Authorize()]
+        public ActionResult Notifications()
+        {
+            var userid = User.Identity.GetUserId();
+            var notifications = db.TicketNotifications.Include(u => u.User).ToList();
+            return View(notifications);
+        }
 
 
         protected override void Dispose(bool disposing)
