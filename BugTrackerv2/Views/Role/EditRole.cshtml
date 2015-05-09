@@ -2,6 +2,12 @@
 @{
     ViewBag.Title = "EditRole";
 }
+
+@section css
+{
+    <link href="~/css/multi-select.css" rel="stylesheet" />
+}
+
 <div class="container">
     <h2>Edit Users to/from @Model.RoleName Role</h2>
     <br />
@@ -28,42 +34,32 @@
 
     <br />
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-10">
             <div class="panel panel-default">
                 <div class="panel-heading">
 
                     <h4><strong>Instructions:</strong></h4>
-                    <span>To select multiple users hold Shift + Up/Down and to unselect a user hold Ctrl + Click</span>
+                    <span>Click users to add or remove from role and then click save to save changes</span>
 
                     <br />
                 </div>
+                
                 <div class="panel-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <p>Add Users to:</p>
-                                @using (Html.BeginForm("AddRole", "Role", FormMethod.Post))
-                        {
-                        @Html.HiddenFor(model => model.RoleName)
-                        @Html.HiddenFor(model => model.RoleId)
-                        @Html.AntiForgeryToken()
-                        @Html.ListBox("AddedSelect", Model.AddedUsers)
-                        <br />
-                        <input type="submit" value=">>" class="btn btn-default" />
-                        }
+                                @using (Html.BeginForm("EditRole", "Role", FormMethod.Post))
+                                {
+                                    @Html.HiddenFor(model => model.RoleName)
+                                    @Html.HiddenFor(model => model.RoleId)
+                                    @Html.AntiForgeryToken()
+                                    @Html.ListBox("Selected", Model.Users, htmlAttributes: new { @multiple = "multiple", id = "my-select"})
+                                <br />
+                                <input type="submit" value="Save" class="btn btn-primary" />
+                                }
                             </div>
-                            <div class="col-md-6">
-                                <p>Delete Users from:</p>
-                                @using (Html.BeginForm("DeleteRole", "Role", FormMethod.Post))
-                        {
-                        @Html.HiddenFor(model => model.RoleName)
-                        @Html.HiddenFor(model => model.RoleId)
-                        @Html.AntiForgeryToken()
-                        @Html.ListBox("DeletedSelect", Model.DeletedUsers)
-                        <br />
-                        <input type="submit" value="<<" class="btn btn-default" />
-                        }
-                            </div>
+              
                         </div>
                     </div>
                 </div>
@@ -79,3 +75,13 @@
     </div>
 
 </div>
+
+@section scripts
+{
+    <script src="~/Scripts/jquery.multi-select.js" type="text/javascript"></script>
+    <script>
+    $(document).ready(function () {
+        $('#my-select').multiSelect()
+    })
+    </script>
+}

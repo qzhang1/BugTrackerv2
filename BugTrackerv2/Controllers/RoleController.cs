@@ -38,26 +38,50 @@ namespace BugTrackerv2.Controllers
 
         public ActionResult EditRole(string RoleName, string query)
         {
-            var usersinRole = helper.UsersInRole(RoleName);
-            var usersnotinRole = helper.UsersNotInRole(RoleName);
+            var usersinRole = helper.UsersInRole(RoleName).Select(u => u.Id);
+            //var usersnotinRole = helper.UsersNotInRole(RoleName);
 
-            if(query != null)
-            {
-                ViewBag.query = query;
-                usersnotinRole = usersnotinRole.Where(s => s.UserName.Contains(query)).ToList();
-                usersinRole = usersinRole.Where(s => s.UserName.Contains(query)).ToList();
-            }
+            //if(query != null)
+            //{
+            //    ViewBag.query = query;
+            //    usersnotinRole = usersnotinRole.Where(s => s.UserName.Contains(query)).ToList();
+            //    usersinRole = usersinRole.Where(s => s.UserName.Contains(query)).ToList();
+            //}
 
-            var ToBeAdded = new MultiSelectList(usersnotinRole, "Id", "UserName");
-            var ToBeRemoved = new MultiSelectList(usersinRole, "Id", "UserName");
+            //var ToBeAdded = new MultiSelectList(usersnotinRole, "Id", "UserName");
+            //var ToBeRemoved = new MultiSelectList(usersinRole, "Id", "UserName");
+
+
             var model = new UnifiedRoleView
             {
                 RoleId = db.Roles.FirstOrDefault(r => r.Name == RoleName).Id,
                 RoleName = RoleName,
-                AddedUsers = ToBeAdded,
-                DeletedUsers = ToBeRemoved
+                Users =  new MultiSelectList(db.Users,"Id","DisplayName",usersinRole),
+                //AddedUsers = ToBeAdded,
+                //DeletedUsers = ToBeRemoved
             };
             return View(model);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditRole(UnifiedRoleView model)
+        {
+            if(ModelState.IsValid)
+            {
+                foreach(var user in db.Users)
+                {
+                    if(model.Selected != null && model.Selected.Contains(user.Id))
+                    {
+                        helper.AddUserToRole(user.Id, model.RoleName);
+                    }
+                    else
+                    {
+                        helper.RemoveUserFromRole(user.Id, model.RoleName);
+                    }
+                }
+            }
+            return RedirectToAction("EditRole", new { RoleName = model.RoleName });
         }
 
         // POST

@@ -178,6 +178,7 @@
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CustomViewModels\EditProjectViewModel.cs" />
+    <Compile Include="Models\CustomViewModels\Notification_Count.cs" />
     <Compile Include="Models\CustomViewModels\ProjectUserViewModel.cs" />
     <Compile Include="Models\CustomViewModels\testingsometingViewModel.cs" />
     <Compile Include="Models\CustomViewModels\TicketDisplayViewModel.cs" />
@@ -186,6 +187,7 @@
     <Compile Include="Models\CustomViewModels\UserLoginRegisterViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserRoleViewModel.cs" />
     <Compile Include="Models\HelperFolder\MakeHistory.cs" />
+    <Compile Include="Models\HelperFolder\notificationHelper.cs" />
     <Compile Include="Models\HelperFolder\UserProjectsHelper.cs" />
     <Compile Include="Models\HelperFolder\UserRolesHelper.cs" />
     <Compile Include="Models\IdentityModels.cs" />
@@ -559,6 +561,9 @@
     <Content Include="Scripts\tinymce\langs\readme.md" />
     <Content Include="Views\Shared\EditorTemplates\tinymce_jquery_full.cshtml" />
     <Content Include="Views\Tickets\Notifications.cshtml" />
+    <Content Include="Views\Tickets\DeleteNotification.cshtml" />
+    <Content Include="Views\Shared\_NotificationPartial.cshtml" />
+    <Content Include="Views\Tickets\NotificationDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

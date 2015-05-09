@@ -8,21 +8,51 @@
         <h2 class="pull-left">Ticket Notifications</h2>
         <div class="clearfix"></div>
     </div>
-    <div class="page-inbox">
+<div class="container">
+    @using (Html.BeginForm("DeleteNotification", "Tickets", FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
         <div class="row">
-           
-            <div class="col-md-12 col-sm-12">
-                <div class="inbox-mail table-responsive">
-                    <table class="table table-hover">
-                        <thead>
-                            <tr>
-                                <th>Ticket</th>
-                                <th>Message</th>
-                                <th>Created</th>
-                            </tr>
-                        </thead>
-                    </table>
+            <div class="col-md-12">
+                <button type="submit" class="btn btn-default" title="Delete" style="float:right;" onclick="return confirm('Do you really want to delete these notifications?')"><span class="fa fa-trash-o"></span></button>
+            </div>
+        </div>
+        <div class="page-inbox">
+            <br />
+            <div class="row">
+                <div class="col-md-12 col-sm-12">
+                    <div class="inbox-mail table-responsive" style="margin-left:14px;">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Ticket</th>
+                                    <th>Message</th>
+                                    <th>Created</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var note in Model)
+                                {
+                                    <tr class="m-unread">
+                                        <td><input type="checkbox" name="deletenotifications" id="notificationcheckbox" value="@note.TicketNotificationId"></td>
+                                        <td>@note.Ticket.Title</td>
+                                        <td>@Html.Raw(note.message)</td>
+                                        <td>@note.Created</td>
+                                        <td>@Html.ActionLink("Details", "NotificationDetails", new { Id = note.TicketNotificationId })</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>
-    </div>
+    }
+</div>
+<script>
+    
+</script>

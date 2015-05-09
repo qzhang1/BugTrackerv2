@@ -17,14 +17,25 @@
             
             <tr>
                 <td>@role.Name</td>
-                <td><a href="@Url.Action("EditRole","Role", new { RoleName = role.Name})">Add Users</a></td>
+                <td>
+                    <a href="@Url.Action("EditRole", "Role", new { RoleName = role.Name })" class="btn btn-primary" >Add/Remove Users</a>                     
+                </td>
             </tr>
-        }        
+        }
+               
     </tbody>
     <tfoot>
         <tr>
             <td>Users without roles</td>
-            <td>@Html.ListBox("noRole", null, htmlAttributes: new {})</td>
+            <td>
+                <a href="#noRoles" class="btn btn-primary" data-toggle="collapse" aria-expanded="false"><i class="fa fa-search-plus"></i>View</a>
+                
+                <div class="collapse" id="noRoles" style="margin-top:10px;">
+                    <div class="well" style="width:260px;margin-bottom:0;padding-bottom:9px;">
+                        @Html.ListBox("noRole", null, htmlAttributes: new { })
+                    </div>
+                </div>                
+            </td>
         </tr>
     </tfoot>
 </table>

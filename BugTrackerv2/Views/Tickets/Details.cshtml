@@ -98,7 +98,7 @@
                                 </dl>
                             </div>
                             <div class="col-md-6">                                
-                                <dl class="dl-horizontal">
+                                <dl class="dl">
                                     <dt>
                                         @Html.DisplayNameFor(model => model.Description)
                                     </dt>
@@ -122,14 +122,14 @@
 
                 <!--Nav Tabs-->
                 <ul class="nav nav-tabs" role="tablist">
-                    <li role="presentation" class="active"><a href="#attachments" aria-controls="home" role="tab" data-toggle="tab">Attachments</a></li>
-                    <li role="presentation"><a href="#comments" aria-controls="profile" role="tab" data-toggle="tab">Comments</a></li>
+                    <li role="presentation" class="active"><a href="#comments" aria-controls="profile" role="tab" data-toggle="tab">Comments</a></li>
+                    <li role="presentation" ><a href="#attachments" aria-controls="home" role="tab" data-toggle="tab">Attachments</a></li>                    
                     <li role="presentation"><a href="#histories" aria-controls="messages" role="tab" data-toggle="tab">History</a></li>
                     
                 </ul>
                 <!-- Tab panes -->
                 <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="attachments">
+                    <div role="tabpanel" class="tab-pane" id="attachments">
                         <div class="container">
                             <div class="row">
                                 <div class="col-md-6">
@@ -178,10 +178,10 @@
                             </div>
                         </div>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="comments">
+                    <div role="tabpanel" class="tab-pane active" id="comments">
                         <div class="container">
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <h4>Post a Comment</h4>
                                     <p>@ViewBag.ErrorMsg</p>
                                     @using (Html.BeginForm("AddComment", "Tickets"))
@@ -195,7 +195,7 @@
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                     }
                                 </div>
-                                <div class="col-md-8">
+                                <div class="col-md-6">
                                     <h3>Comments</h3>
                                     <div style="height:200px;line-height:3em;overflow:auto;">
                                         @foreach (var comment in Model.TicketComments)

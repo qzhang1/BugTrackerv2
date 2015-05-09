@@ -1,4 +1,5 @@
 ﻿@using Microsoft.AspNet.Identity
+@using BugTrackerv2.Models.HelperFolder
 <!DOCTYPE html>
 <html>
 <head>
@@ -67,15 +68,12 @@
                         }
 
 
-                            <!-- Mainmenu with submenu -->
-                            <li class="has_submenu">
-                                <a href="#"><i class="fa fa-envelope"></i> Notifications <span class="nav-caret fa fa-caret-down"></span></a>
-                                <!-- Submenu -->
-                                <ul class="list-unstyled">
-                                    <li><a href="inbox.html"><i class="fa fa-angle-double-right"></i> Inbox</a></li>
-                                    <li><a href="mail-read.html"><i class="fa fa-angle-double-right"></i> Mail Read</a></li>
-                                    
-                                </ul>
+                            @{
+                                var a = new notificationHelper();
+                                var count = a.CountNotifications(User.Identity.GetUserId());
+                            }
+                            <li>
+                                <a href="@Url.Action("Notifications","Tickets")"><i class="fa fa-bell"></i> Notifications <span class="label label-info" style="float:right;">@count</span></a>                                
                             </li>
                         </ul>
                     </div>
@@ -83,7 +81,10 @@
                     <div class="side-nav-block">
                         <h4>Menu</h4>
                         <ul class="list-unstyled">
-                            <li><a href="@Url.Action("Login","Account")"><i class="fa fa-sign-in"></i> Login</a></li>
+                            @if (!User.Identity.IsAuthenticated)
+                            {
+                                <li><a href="@Url.Action("Login","Account")"><i class="fa fa-sign-in"></i> Login</a></li>
+                            }                            
                             <li><a href="lock.html"><i class="fa fa-lock"></i> Lock</a></li>
                         </ul>
                     </div>
@@ -121,7 +122,7 @@
 
                                 <!-- Notifications -->
                                 <div class="dropdown">
-                                    <a href="#" id="notifications" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-bell"></i> <span class="label label-info">5</span></a>
+                                    <a href="#" id="notifications" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-bell"></i> <span class="label label-info">@count</span></a>
                                     <!-- Dropdown -->
                                     <ul class="dropdown-menu" role="button" aria-labelledby="notifications">
 
@@ -171,12 +172,12 @@
 
                                 <!-- Messages -->
                                 <div class="dropdown">
-                                    <a href="#" id="messages" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-envelope"></i> <span class="label label-danger">5</span></a>
+                                    <a href="#" id="messages" data-toggle="dropdown" class="mhead-icon"><i class="icon-ticket"></i> <span class="label label-danger">5</span></a>
                                     <ul class="dropdown-menu" role="button" aria-labelledby="messages">
 
                                         <!-- Dropdown menu head -->
                                         <li class="dropdown-head">
-                                            Messages <span class="label label-danger pull-right">5</span>
+                                            Tickets <span class="label label-danger pull-right">5</span>
                                         </li>
                                         <!-- Content -->
                                         <li>
@@ -224,7 +225,7 @@
                                         <li>
                                             <a href="#">
                                                 <!-- User image -->
-                                                <img src="img/user1.png" alt="" class="img-responsive img-circle" />
+                                                <img src="#" alt="" class="img-responsive img-circle" />
                                                 <!-- User details -->
                                                 <div class="duser-content">
                                                     Anjelina Jolie
@@ -235,7 +236,7 @@
                                         </li>
                                         <li>
                                             <a href="#">
-                                                <img src="img/user2.png" alt="" class="img-responsive img-circle" />
+                                                <img src="#" alt="" class="img-responsive img-circle" />
                                                 <div class="duser-content">
                                                     Brad Pitt
                                                     <span>Lorem ipsum dolor sit amet elit.</span>
@@ -245,7 +246,7 @@
                                         </li>
                                         <li>
                                             <a href="#">
-                                                <img src="img/user1.png" alt="" class="img-responsive img-circle" />
+                                                <img src="#" alt="" class="img-responsive img-circle" />
                                                 <div class="duser-content">
                                                     Al Pacino
                                                     <span>Lorem ipsum dolor sit amet elit.</span>
@@ -328,234 +329,23 @@
         <script src="/templatescripts/jquery.dataTables.min.js"></script>
         <script>
             $(document).ready(function () {
-                $('#index').dataTable();
+                $('#index').dataTable({                    
+                    "bAutoWidth":false,
+                    "aoColumnDefs": [
+                        { "sWidth": "10%", "aTargets": [ 0,7,8 ] }
+                    ]
+                });
             })
         </script>
     <!-- Javascript for this page -->
     <script type="text/javascript">
 
 
-			$("<div id='tooltip'></div>").css({
-				position: "absolute",
-				display: "none",
-				"border-radius":"5px",
-				padding: "0px 5px",
-				color:"#999",
-				"font-size":"11px",
-				"background-color": "#fff",
-				"border":"1px solid #ccc"
-			}).appendTo("body");
-
-			$("#m-line-chart").bind("plothover", function (event, pos, item) {
-					if (item) {
-						var x = item.datapoint[0].toFixed(2),
-							y = item.datapoint[1].toFixed(2);
-
-						$("#tooltip").html(x + ", " + y)
-							.css({top: item.pageY+5, left: item.pageX+5})
-							.fadeIn(200);
-					} else {
-						$("#tooltip").hide();
-					}
-			});
-
-
-            
-            $.plot("#m-line-chart", [ { data: d1, label: "Revenue"},{ data: d2, label: "Profit"}], options);
-         });
-
-		 
-
-		 $(function() {
-
-			var data1 = [];
-			for (var i = 0; i <= 20; i += 1) {
-				data1.push([i, parseInt(Math.random() * 30)]);
-			}
-
-			var data2 = [];
-			for (var i = 0; i <= 20; i += 1)
-			data2.push([i, parseInt(Math.random() * 30)]);
-
-			var stack = 0,
-				bars = true,
-				lines = false,
-				steps = false;
-
-			function plotWithOptions() {
-				$.plot("#m-bar-chart", [ data1, data2 ], {
-					series: {
-						stack : stack,
-						bars: {
-							show: bars,
-							barWidth: 0.6,
-							lineWidth: 1,
-							fill: true,
-							fillColor: { colors: [ { opacity: 0.9 }, { opacity: 0.5}] }
-						}
-					},
-					colors: ["#3FB8CA", "#2BB3C7"],
-				    grid: {
-					     hoverable: true, color: "#bbb", backgroundColor:"#fff" ,borderWidth:1, borderColor:"#e8e8e8", labelMargin:15
-					},
-					xaxis: {
-					    ticks:8,
-					    font: {
-							size: 11,
-							color: "#aaa"
-						}
-					},
-					yaxis: {
-						ticks: 4,
-						font: {
-							size: 11,
-							color: "#aaa"
-						}
-					}
-				});
-			}
-
-			plotWithOptions();
-
-		});
+			
 
 		
 
-		$(function () {
-			// we use an inline data source in the example, usually data would
-			// be fetched from a server
-			var data = [], totalPoints = 300;
-			function getRandomData() {
-				if (data.length > 0)
-					data = data.slice(1);
-
-				// do a random walk
-				while (data.length < totalPoints) {
-					var prev = data.length > 0 ? data[data.length - 1] : 50;
-					var y = prev + Math.random() * 10 - 5;
-					if (y < 10)
-						y = 10;
-					if (y > 70)
-						y = 70;
-					data.push(y);
-				}
-
-				// zip the generated y values with the x values
-				var res = [];
-				for (var i = 0; i < data.length; ++i)
-					res.push([i, data[i]])
-				return res;
-			}
-
-			// setup control widget
-			var updateInterval = 100;
-			$("#updateInterval").val(updateInterval).change(function () {
-				var v = $(this).val();
-				if (v && !isNaN(+v)) {
-					updateInterval = +v;
-					if (updateInterval < 1)
-						updateInterval = 1;
-					if (updateInterval > 2000)
-						updateInterval = 2000;
-					$(this).val("" + updateInterval);
-				}
-			});
-
-			// setup plot
-			var options = {
-				series: { shadowSize: 0 }, // drawing is faster without shadows
-				lines: {fill: true, lineWidth:1},
-				colors: ["#51d466"],
-				grid: {
-					hoverable: false, color: "#bbb", backgroundColor:"#fff" ,borderWidth:1, borderColor:"#e8e8e8", labelMargin:15
-				},
-				xaxis: {
-					ticks:8,
-					font: {
-						size: 11,
-							color: "#aaa"
-					}
-				},
-				yaxis: {
-					ticks: 4,
-					font: {
-						size: 11,
-						color: "#aaa"
-					}
-				}
-			};
-			var plot = $.plot($("#m-real-chart"), [ getRandomData() ], options);
-
-			function update() {
-				plot.setData([ getRandomData() ]);
-				// since the axes don't change, we don't need to call plot.setupGrid()
-				plot.draw();
-
-				setTimeout(update, updateInterval);
-			}
-			update();
-
-		});
-
 		
-
-		$(function () {
-
-			var data = [],
-			series = 3;
-
-			for (var i = 0; i < series; i++) {
-				data[i] = {
-					data: Math.floor((Math.random()*10)+1) + 1
-				}
-			}
-
-			var placeholder = $("#m-pie-chart");
-
-			placeholder.unbind();
-
-			$.plot(placeholder, data, {
-				series: {
-					pie: {
-						show: true,
-						innerRadius:0.6,
-						label: {
-							show: false
-						}
-					}
-				},
-				colors: ["#f75353","#51d466","#32c8de"],
-				grid: {hoverable: false},
-				legend: {
-					show: false
-				}
-			});
-
-
-		});
-		
-
-		/* ****************************************** */
-		/* Main area sparkline */
-		/* ****************************************** */
-
-		$("#spark1").sparkline([8,11,9,12,10,9,13,11,12,11,10,12,11,], {
-			type: 'bar',
-			height: '30',
-			barWidth: 4,
-			barColor: '#f75353'});
-
-		$("#spark2").sparkline([8,11,9,12,10,9,13,11,12,11,10,12,11,], {
-			type: 'bar',
-			height: '30',
-			barWidth: 4,
-			barColor: '#51d466'});
-
-		$("#spark3").sparkline([8,11,9,12,10,9,13,11,12,11,10,12,11,], {
-			type: 'bar',
-			height: '30',
-			barWidth: 4,
-			barColor: '#32c8de'});
 
     </script>
     <!-- Custom JS -->

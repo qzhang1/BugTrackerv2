@@ -82,8 +82,7 @@ namespace BugTrackerv2.Controllers
                 listofusers = db.Users.Where(u => u.Roles.Any(r => r.RoleId == Dev_Id));                                //list of users who are Devs
                  UsersOnProject = helper.ListUsersOnProject(project.ProjectId).Where(u => u.Roles.Any(r => r.RoleId == Dev_Id)).Select(dn => dn.Id);    //list users on project who are developers
             }
-            TempData["project"] = project;
-            
+
          
             var model = new testingsometingViewModel
             {
@@ -113,9 +112,9 @@ namespace BugTrackerv2.Controllers
                 //add/remove project managers
                 
                     foreach (var user in db.Users)
-                    {                        
+                    {
 
-                        if(model.selected.Contains(user.Id))
+                        if ((model.selected != null) && model.selected.Contains(user.Id))
                            {
                                helper.AddUsersToProject(user.Id, project.ProjectId);
                            }

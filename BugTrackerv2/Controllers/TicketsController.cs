@@ -14,7 +14,7 @@ using System.IO;
 using System.Text;
 using SendGrid;
 using System.Net.Mail;
-
+using BugTrackerv2.Models.CustomViewModels;
 namespace BugTrackerv2.Controllers
 {
     public class TicketsController : Controller
@@ -87,6 +87,18 @@ namespace BugTrackerv2.Controllers
                     Body.Created = System.DateTime.Now;
                     Body.UserId = User.Identity.GetUserId();
                     db.TicketComments.Add(Body);
+
+                    //notify dev when comment is added
+                    var ticket = db.Tickets.FirstOrDefault(u => u.TicketId == Body.TicketId);
+                    var notification = new TicketNotification
+                    {
+                        TicketId = Body.TicketId,
+                        UserId = ticket.AssignedToUserId,
+                        message = "The user, " + db.Users.FirstOrDefault(u => u.Id == Body.UserId).DisplayName + " has commented in the ticket titled, " + "<strong>" + "\"" + ticket.Title + "\""+ "</strong>",
+                        Created = System.DateTime.Now,
+                        read = false
+                    };
+                    db.TicketNotifications.Add(notification);
                     db.SaveChanges();
             }
             return RedirectToAction("Details", new { Id = Body.TicketId });
@@ -119,6 +131,16 @@ namespace BugTrackerv2.Controllers
                     attachment.FileName = file.FileName;
                 }
                 db.TicketAttachments.Add(attachment);
+                var ticket = db.Tickets.FirstOrDefault(u => u.TicketId == attachment.TicketId);
+                var notification = new TicketNotification
+                {
+                    TicketId = attachment.TicketId,
+                    UserId = ticket.AssignedToUserId,
+                    message = "The user, " + db.Users.FirstOrDefault(u => u.Id == attachment.UserId).DisplayName + " has added an attachment in the ticket titled, " + "<strong>" + "\"" + ticket.Title + "\"" + "</strong>",
+                    Created = System.DateTime.Now,
+                    read = false
+                };
+                db.TicketNotifications.Add(notification);
                 db.SaveChanges();                
             }
             
@@ -243,7 +265,8 @@ namespace BugTrackerv2.Controllers
                         TicketId = ticket.TicketId,
                         UserId = ticket.AssignedToUserId,
                         message = "You've been assigned to ticket titled " + ticket.Title,
-                        Created = System.DateTime.Now
+                        Created = System.DateTime.Now,
+                        read = false
                     };
                     db.TicketNotifications.Add(notification);
                     new EmailService().SendAsync(new IdentityMessage
@@ -277,7 +300,8 @@ namespace BugTrackerv2.Controllers
                             TicketId = ticket.TicketId,
                             UserId = ticket.AssignedToUserId,
                             message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedDescription.Property + " from " + ChangedDescription.OldValue + " to " + ChangedDescription.NewValue,
-
+                            Created = System.DateTime.Now,
+                            read = false
                         };
                         db.TicketNotifications.Add(notification);
                     }
@@ -296,14 +320,18 @@ namespace BugTrackerv2.Controllers
                         Change = System.DateTimeOffset.Now,
                     };
                     db.TicketHistories.Add(ChangedProject);
-                    var notification = new TicketNotification
+                    if(ticket.AssignedToUserId != UserId)
                     {
-                        TicketId = ticket.TicketId,
-                        UserId = ticket.AssignedToUserId,
-                        message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedProject.Property + " from " + ChangedProject.OldValue + " to " + ChangedProject.NewValue
-                    };
-                    db.TicketNotifications.Add(notification);
-                    
+                        var notification = new TicketNotification
+                        {
+                            TicketId = ticket.TicketId,
+                            UserId = ticket.AssignedToUserId,
+                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedProject.Property + " from " + ChangedProject.OldValue + " to " + ChangedProject.NewValue,
+                            Created = System.DateTime.Now,
+                            read = false
+                        };
+                        db.TicketNotifications.Add(notification);
+                    }
                 }
 
                 if(oldTicket.TicketPriorityId != ticket.TicketPriorityId)
@@ -324,8 +352,9 @@ namespace BugTrackerv2.Controllers
                         {
                             TicketId = ticket.TicketId,
                             UserId = ticket.AssignedToUserId,
-                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedPriority.Property + " from " + ChangedPriority.OldValue + " to " + ChangedPriority.NewValue
-
+                            message = db.Users.FirstOrDefault(u => u.Id == UserId).DisplayName + " has changed " + ChangedPriority.Property + " from " + ChangedPriority.OldValue + " to " + ChangedPriority.NewValue,
+                            Created = System.DateTime.Now,
+                            read = false
                         };
                         db.TicketNotifications.Add(notification);
                     }
@@ -409,14 +438,67 @@ namespace BugTrackerv2.Controllers
             return RedirectToAction("Index");
         }
 
+
+        //TicketNotification Index List
         [Authorize()]
         public ActionResult Notifications()
         {
             var userid = User.Identity.GetUserId();
-            var notifications = db.TicketNotifications.Include(u => u.User).ToList();
+            var notifications = db.TicketNotifications.Include(u => u.User).Where(ui => ui.UserId == userid).ToList();
+            foreach(var note in notifications)
+            {
+                note.Ticket = db.Tickets.FirstOrDefault(t => t.TicketId == note.TicketId);
+            }
             return View(notifications);
         }
 
+        //GET
+        public ActionResult NotificationDetails(int? Id)
+        {
+            if (Id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TicketNotification notification = db.TicketNotifications.Find(Id);
+            if (notification == null)
+            {
+                return HttpNotFound();
+            }            
+            return View(notification);
+        }
+
+        public ActionResult DeleteNotification(int? id)
+        {
+            if (id == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            TicketNotification notification = db.TicketNotifications.Find(id);
+            if (notification == null)
+            {
+                return HttpNotFound();
+            }
+            notification.Ticket = db.Tickets.FirstOrDefault(t => t.TicketId == notification.TicketId);
+            return View(notification);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteNotification(int[] deletenotifications)
+        {
+            if(deletenotifications != null && deletenotifications.Length > 0)
+            {
+                foreach(var id in deletenotifications)
+                {
+                    var a = db.TicketNotifications.Find(id);
+                    db.TicketNotifications.Remove(a);
+                }
+            }            
+            db.SaveChanges();
+            return RedirectToAction("Notifications", "Tickets");
+        }
+
+        
 
         protected override void Dispose(bool disposing)
         {
