@@ -1,15 +1,151 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+@*
     <div class="jumbotron">
         <h1>ASP.NET</h1>
         <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
         <p><a href="http://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
     </div>
+*@
+
+@using BugTrackerv2.Models.HelperFolder
+
+<style>
+    .dataTables_filter label {
+        float: right;
+    }
+
+    .alert-danger {
+        background-color: #ea6153;
+        color: white;
+    }
+
+    .alert-info {
+        background-color: #0094ff;
+        color: white;
+    }
+
+    .alert-success {
+        background-color: #00ff90;
+        color: white;
+    }
+
+    .alert-warning {
+        background-color: #222;
+        color: white;
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="m-pie-chart">
+            <div class="widget">
+                <div class="widget-head br-red">
+                    <h3><i class="fa fa-desktop"></i>
+                    Users</h3>
+                </div>
+                <div class="widget-body">
+                    <div class="m-pie-chart">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <div id="m-pie-chart"></div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                @{
+                                    var a = new chartdatahelper();
+                                    var rolecount = a.RoleCount();
+                                }
+                                <ul class="list-unstyled">
+                                    <li><span class="badge badge-danger">@rolecount[0]</span> &nbsp; <strong>Administrators</strong></li>
+                                    <li><span class="badge badge-success">@rolecount[1]</span> &nbsp; <strong>Project Managers</strong></li>
+                                    <li><span class="badge badge-info">@rolecount[2]</span> &nbsp; <strong>Developers</strong></li>
+                                    <li><span class="badge badge-warning">@rolecount[3]</span> &nbsp; <strong>Submitters</strong></li>
+                                    <li><span class="badge badge-important">@rolecount[4]</span> &nbsp; <strong>Without Role</strong></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>                    
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="widget">
+            <div class="widget-head br-lblue">
+                <h3 class="pull-left">
+                    <i class="fa fa-bar-chart-o"></i>
+                    Recent Tickets
+                </h3>
+                <div class="clearfix"></div>
+            </div>
+            <div class="widget-body">                
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Title</th>
+                            <th>Project</th>
+                            <th>Created</th>
+                            <th>Type</th>
+                            <th>Status</th>
+                            <th>Priority</th>                           
+                        </tr>
+                    </thead>
+                    @{
+                        var pt = a.PopularTickets();
+                    }
+                    <tbody>
+                        @foreach (var ticket in pt)
+                        {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ticket.Title)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ticket.project.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ticket.Created)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ticket.TicketType.Name)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => ticket.TicketStatus.Name)
+                                </td>
+                                @if (ticket.TicketPriority.Name == "High")
+                                {
+                                    <td class="alert alert-danger">@Html.DisplayFor(modelItem => ticket.TicketPriority.Name)</td>
+                                }
+                                else if (ticket.TicketPriority.Name == "Medium")
+                                {
+                                    <td class="alert alert-info">@Html.DisplayFor(modelItem => ticket.TicketPriority.Name)</td>
+                                }
+                                else if (ticket.TicketPriority.Name == "Low")
+                                {
+                                    <td class="alert alert-success">@Html.DisplayFor(modelItem => ticket.TicketPriority.Name)</td>
+                                }
+                                else
+                                {
+                                    <td class="alert alert-warning">@Html.DisplayFor(modelItem => ticket.TicketPriority.Name)</td>
+
+                                }
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
     <div class="row">
         <div class="col-md-4">
-            <h2>Getting started</h2>
+            <h2><span class="fa fa-bell-o fa-3x"></span> Notifications</h2>
             <p>
                 ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
                 enables a clean separation of concerns and gives you full control over markup
@@ -18,13 +154,15 @@
             <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
         </div>
         <div class="col-md-4">
-            <h2>Get more libraries</h2>
+            <h2><span class="fa fa-folder-open-o fa-3x"></span> Projects</h2>
             <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
             <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
         </div>
         <div class="col-md-4">
-            <h2>Web Hosting</h2>
+            <h2><span class="fa fa-bar-chart-o fa-3x"></span> Tickets</h2>
             <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
             <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
         </div>
     </div>
+
+

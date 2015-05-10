@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNet.Identity
 @using BugTrackerv2.Models.HelperFolder
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -307,6 +308,7 @@
         @Scripts.Render("~/bundles/jquery")
         @Scripts.Render("~/bundles/bootstrap")
         @RenderSection("scripts", required: false)
+
         <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
         <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
         <script src="~/dist/js/bootstrap-select.min.js"></script>
@@ -315,6 +317,11 @@
         <script src="/templatescripts/wysihtml5-0.3.0.js"></script>
         <script src="/templatescripts/prettify.js"></script>
         <script src="/templatescripts/bootstrap-wysihtml5.min.js"></script>
+
+        <script src="/templatescripts/jquery.flot.min.js"></script>
+        <script src="/templatescripts/jquery.flot.stack.min.js"></script>
+        <script src="/templatescripts/jquery.flot.pie.min.js"></script>
+        <script src="/templatescripts/jquery.flot.resize.min.js"></script>
         <!-- Validate JS -->
         <script src="/templatescripts/jquery.validate.js"></script>
         <!-- Form wizard steps  JS -->
@@ -327,28 +334,62 @@
         <script src="/templatescripts/jquery.slimscroll.min.js"></script>
         <!-- Data Tables JS -->
         <script src="/templatescripts/jquery.dataTables.min.js"></script>
+    
         <script>
             $(document).ready(function () {
-                $('#index').dataTable({                    
-                    "bAutoWidth":false,
-                    "aoColumnDefs": [
-                        { "sWidth": "10%", "aTargets": [ 0,7,8 ] }
-                    ]
-                });
+                $('#index').dataTable({});                               
             })
         </script>
     <!-- Javascript for this page -->
-    <script type="text/javascript">
+    <script>
+
+        //PIE Chart
+        $(function () {
+
+            var data = [],
+            series = 5;
+            /*
+            for (var i = 0; i < series; i++) {
+                data[i] = {
+                    data: Math.floor((Math.random() * 10) + 1) + 1
+                }
+            }
+            */
+            @{
+                var temp = new chartdatahelper();
+                var rolecount = temp.RoleCount();
+            }
+            data[0] = @rolecount[0];
+            data[1] = @rolecount[1];
+            data[2] = @rolecount[2];
+            data[3] = @rolecount[3];
+            data[4] = @rolecount[4];
+            var placeholder = $("#m-pie-chart");
+
+            placeholder.unbind();
+
+            $.plot(placeholder, data, {
+                series: {
+                    pie: {
+                        show: true,
+                        innerRadius: 0.6,
+                        label: {
+                            show: false
+                        }
+                    }
+                },
+                colors: ["#f75353", "#51d466", "#32c8de","#f78153","#b94a48"],
+                grid: { hoverable: false },
+                legend: {
+                    show: false
+                }
+            });
 
 
-			
-
-		
-
-		
-
+        });
     </script>
     <!-- Custom JS -->
     <script src="/templatescripts/custom.js"></script>
+            
 </body>
 </html>

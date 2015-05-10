@@ -8,6 +8,26 @@
     .dataTables_filter label{
         float:right;
     }
+
+    .alert-danger{
+        background-color:#ea6153;
+        color:white;
+    }
+
+    .alert-info{
+        background-color:#0094ff;
+        color:white;
+    }
+
+    .alert-success{
+        background-color:#00ff90;
+        color:white;
+    }
+
+    .alert-warning{
+        background-color:#222;
+        color:white;
+    }
 </style>
 
 <div class="container">
@@ -24,7 +44,7 @@
     
 </style>
 <div>
-    <table class="table table-striped table-bordered" cellspacing="0" width="90%" id="index">
+    <table class="table table-bordered" cellspacing="0" width="90%" id="index">
         <thead>
             <tr>
                 <th>
@@ -62,6 +82,7 @@
                 <th>Actions</th>
             </tr>
         </thead>
+
         @foreach (var item in Model)
         {
             <tr>
@@ -77,9 +98,23 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.TicketStatus.Name)
                 </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.TicketPriority.Name)
-                </td>
+                @if(item.TicketPriority.Name == "High")
+                {
+                    <td class="alert alert-danger">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
+                }
+                else if(item.TicketPriority.Name == "Medium")
+                {
+                    <td class="alert alert-info">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
+                }
+                else if (item.TicketPriority.Name == "Low")
+                {
+                    <td class="alert alert-success">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
+                }
+                else
+                {
+                    <td class="alert alert-warning">@Html.DisplayFor(modelItem => item.TicketPriority.Name)</td>
+
+                }
                 <td>
                     @Html.DisplayFor(modelItem => item.Created)
                 </td>

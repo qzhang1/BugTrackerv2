@@ -14,7 +14,7 @@
         @Html.AntiForgeryToken()
         <div class="row">
             <div class="col-md-12">
-                <button type="submit" class="btn btn-default" title="Delete" style="float:right;" onclick="return confirm('Do you really want to delete these notifications?')"><span class="fa fa-trash-o"></span></button>
+                <button type="submit" class="btn btn-primary" title="Delete" style="float:right;" onclick="return confirm('Do you really want to delete these notifications?')"><span class="fa fa-trash-o"></span></button>
             </div>
         </div>
         <div class="page-inbox">
@@ -40,7 +40,38 @@
                                         <td>@note.Ticket.Title</td>
                                         <td>@Html.Raw(note.message)</td>
                                         <td>@note.Created</td>
-                                        <td>@Html.ActionLink("Details", "NotificationDetails", new { Id = note.TicketNotificationId })</td>
+                                        <td>
+                                            @*@Html.ActionLink("Details", "NotificationDetails", new { Id = note.TicketNotificationId })*@
+                                            <a href="#" data-toggle="modal" data-target="#@note.TicketNotificationId" class="btn btn-primary"><span class="fa fa-search-plus"> Details</span></a>
+                                            <div class="modal fade" id="@note.TicketNotificationId" style="width:630px;">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dissmiss="modal" aria-hidden="true">
+                                                                x
+                                                            </button>
+                                                            <h4 class="modal-title">Details</h4>
+                                                            <div class="clearfix"></div>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                                    <dl class="dl dl-horizontal">
+                                                                        <dt>Ticket</dt>
+                                                                        <dd>@note.Ticket.Title</dd>
+                                                                        <dt>Assignee</dt>
+                                                                        <dd>@note.Ticket.AssignedToUser.DisplayName</dd>
+                                                                        <dt>Message</dt>
+                                                                        <dd>@note.message</dd>
+                                                                        <dt>Changed On</dt>
+                                                                        <dd>@note.Created</dd>
+                                                                    </dl>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
 
                                 }

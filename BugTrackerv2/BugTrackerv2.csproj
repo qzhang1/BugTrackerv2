@@ -186,6 +186,7 @@
     <Compile Include="Models\CustomViewModels\UserDisplayViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserLoginRegisterViewModel.cs" />
     <Compile Include="Models\CustomViewModels\UserRoleViewModel.cs" />
+    <Compile Include="Models\HelperFolder\chartdatahelper.cs" />
     <Compile Include="Models\HelperFolder\MakeHistory.cs" />
     <Compile Include="Models\HelperFolder\notificationHelper.cs" />
     <Compile Include="Models\HelperFolder\UserProjectsHelper.cs" />

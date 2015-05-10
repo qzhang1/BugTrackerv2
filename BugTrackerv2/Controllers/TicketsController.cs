@@ -93,7 +93,7 @@ namespace BugTrackerv2.Controllers
                     var notification = new TicketNotification
                     {
                         TicketId = Body.TicketId,
-                        UserId = ticket.AssignedToUserId,
+                        UserId = ticket.AssignedToUserId,           //who the notification is for in this case the person assigned to the ticket (developer)
                         message = "The user, " + db.Users.FirstOrDefault(u => u.Id == Body.UserId).DisplayName + " has commented in the ticket titled, " + "<strong>" + "\"" + ticket.Title + "\""+ "</strong>",
                         Created = System.DateTime.Now,
                         read = false
@@ -264,7 +264,7 @@ namespace BugTrackerv2.Controllers
                     {
                         TicketId = ticket.TicketId,
                         UserId = ticket.AssignedToUserId,
-                        message = "You've been assigned to ticket titled " + ticket.Title,
+                        message = "You've been assigned to ticket titled " + ticket.Title + " by " + db.Users.Find(UserId),
                         Created = System.DateTime.Now,
                         read = false
                     };
@@ -273,7 +273,7 @@ namespace BugTrackerv2.Controllers
                     {
                         Subject = "You've been assigned a ticket",
                         Destination = db.Users.FirstOrDefault(u => u.Id == ticket.AssignedToUserId).Email,
-                        Body = "You've been assigned to ticket titled " + ticket.Title + "."
+                        Body = "You've been assigned to ticket titled " + ticket.Title + " by " + db.Users.Find(UserId) + "."
 
                     });
 
