@@ -125,24 +125,6 @@ namespace BugTrackerv2.Controllers
                     return View(model);
             }
         }
-        [AllowAnonymous]
-        public ActionResult GuessLogin()
-        {
-            LoginViewModel model = new LoginViewModel();
-            model.Email = "Administrator@Test.com";
-            model.Password = "MjjdHoB21124";
-            model.RememberMe = true;
-            var result = SignInManager.PasswordSignIn(model.Email, model.Password, model.RememberMe, shouldLockout: false);
-            switch(result)
-            {
-                case SignInStatus.Success:
-                    return RedirectToAction("Index","Home");
-                case SignInStatus.Failure:
-                default:
-                    ModelState.AddModelError("", "Invalid login attempt.");
-                    return View(model);
-            }
-        }
 
         //
         // GET: /Account/VerifyCode
@@ -455,7 +437,7 @@ namespace BugTrackerv2.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Index", "Home");
         }
 
         //

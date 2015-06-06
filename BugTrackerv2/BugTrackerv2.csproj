@@ -166,7 +166,6 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ContactController.cs" />
-    <Compile Include="Controllers\GuestController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\ProjectsController.cs" />
@@ -219,7 +218,6 @@
     <Content Include="css\font-awesome.css" />
     <Content Include="css\font-awesome.min.css" />
     <Content Include="css\fullcalendar.css" />
-    <Content Include="css\heroic-features.css" />
     <Content Include="css\images\animated-overlay.gif" />
     <Content Include="css\images\banner.png" />
     <Content Include="css\images\main-back.png" />
@@ -236,7 +234,6 @@
     <Content Include="css\images\ui-icons_454545_256x240.png" />
     <Content Include="css\images\ui-icons_888888_256x240.png" />
     <Content Include="css\images\ui-icons_cd0a0a_256x240.png" />
-    <Content Include="css\jquery-impromptu.css" />
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.dataTables.css" />
     <Content Include="css\jquery.gritter.css" />
@@ -299,7 +296,6 @@
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Icon.png" />
     <Content Include="img\attachments\motor_control_ckt.jpg" />
-    <Content Include="img\bug_tracking.jpg" />
     <Content Include="img\projects_folder.png" />
     <Content Include="img\switch.png" />
     <Content Include="Scripts\jquery.multi-select.js" />
@@ -312,7 +308,6 @@
     <Content Include="templatescripts\excanvas.min.js" />
     <Content Include="templatescripts\fullcalendar.min.js" />
     <Content Include="templatescripts\html5shiv.js" />
-    <Content Include="templatescripts\jquery-impromptu.js" />
     <Content Include="templatescripts\jquery-ui.min.js" />
     <Content Include="templatescripts\jquery.dataTables.min.js" />
     <Content Include="templatescripts\jquery.flot.min.js" />
@@ -570,13 +565,10 @@
     <Content Include="Views\Tickets\DeleteNotification.cshtml" />
     <Content Include="Views\Shared\_NotificationPartial.cshtml" />
     <Content Include="Views\Tickets\NotificationDetails.cshtml" />
-    <Content Include="Views\Tickets\Calendar.cshtml" />
-    <Content Include="Views\Home\Landing.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Contact\" />
-    <Folder Include="Views\Guest\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

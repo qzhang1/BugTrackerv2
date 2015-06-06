@@ -10,13 +10,12 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="/dist/css/bootstrap-select.min.css" rel="stylesheet" />
+    <link href="~/dist/css/bootstrap-select.min.css" rel="stylesheet" />
     <link href="/css/font-awesome.min.css" rel="stylesheet">
     <link href="/css/less-style.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
     <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link href="/css/jquery-impromptu.css" rel="stylesheet" />
     @RenderSection("css", false)
 
 </head>
@@ -24,14 +23,15 @@
     <div class="outer">
         <div class="sidebar">
             <div class="sidey">
-                <div class="logo" style="padding-bottom:0px;padding-top:0px;">
+                <div class="logo">
                     <h1>
                         <a href="@Url.Action("Index","Home")">
-                            <i class="fa fa-desktop br-red"></i>BugTrack<span style="top:-20px;">Dashboard</span>
+                            <i class="fa fa-desktop br-red"></i>
+                            Dash
                         </a>
                     </h1>
                 </div>
-                <div class="sidebar-dropdown"><a class="br-red"><i class="fa fa-bars"></i></a></div>
+                <div class="sidebar-dropdown"><a href="#" class="br-red"><i class="fa fa-bars"></i></a></div>
                 <div class="side-nav">
                     <div class="side-nav-block">
                         <!-- Sidebar heading -->
@@ -43,7 +43,7 @@
                         {
                             <!-- Mainmenu with submenu -->
                                 <li class="has_submenu">
-                                    <a href="#" class="dropdown-button"><i class="fa fa-user"></i> Admin <span class="nav-caret fa fa-caret-down"></span></a>
+                                    <a href="#"><i class="fa fa-user"></i> Admin <span class="nav-caret fa fa-caret-down"></span></a>
                                     <!-- Submenu -->
                                     <ul class="list-unstyled">
                                         <li><a href="@Url.Action("Index","Role")"><i class="fa fa-angle-double-right"></i> Roles</a></li>
@@ -55,29 +55,27 @@
                         {
                             <li><a href="@Url.Action("Index","Projects")"><i class="fa fa-file-code-o"></i> Project</a></li>
                         }
-                          
+                            @if (User.Identity.IsAuthenticated)
+                        {
                             <!-- Mainmenu with submenu -->
                                 <li class="has_submenu">
-                                    <a href="#" class="dropdown-button">
-                                        <i class="icon-ticket"></i> Tickets <span class="nav-caret fa fa-caret-down"></span>
-                                    </a>
+                                    <a href="#"><i class="icon-ticket"></i> Tickets <span class="nav-caret fa fa-caret-down"></span></a>
                                     <!-- Submenu -->
                                     <ul class="list-unstyled">
                                         <li><a href="@Url.Action("Index","Tickets")"><i class="fa fa-angle-double-right"></i> Ticket table</a></li>
-                                        
+                                        <li><a href="form-validate.html"><i class="fa fa-angle-double-right"></i> Calendar</a></li>
                                     </ul>
                                 </li>
-                        
-
-
-                           @{
-                               var a = new notificationHelper();
-                               var count = a.CountNotifications(User.Identity.GetUserId());
                         }
+
+
+                            @{
+                                var a = new notificationHelper();
+                                var count = a.CountNotifications(User.Identity.GetUserId());
+                            }
                             <li>
                                 <a href="@Url.Action("Notifications","Tickets")"><i class="fa fa-bell"></i> Notifications <span class="label label-info" style="float:right;">@count</span></a>                                
                             </li>
-                            
                         </ul>
                     </div>
 
@@ -108,82 +106,107 @@
                         <div class="col-md-3 col-sm-4 col-xs-6">
                             <!-- Search block -->
                             <div class="head-search">
-                                
+                                <form class="form" role="form">
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" placeholder="Search...">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default" type="button"><i class="fa fa-search"></i></button>
+                                        </span>
+                                    </div>
+                                </form>
                             </div>
                         </div>
 
                         <div class="col-md-3 col-sm-4 hidden-xs">
                             <!-- Notifications -->
                             <div class="head-noty text-center">
-                                @{
-                                    var b = new notificationHelper();
-                                    var counter = b.CountNotifications(User.Identity.GetUserId());
-                                }
+
                                 <!-- Notifications -->
                                 <div class="dropdown">
-                                    <a href="#" id="notifications" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-bell"></i> <span class="label label-info">@counter</span></a>
+                                    <a href="#" id="notifications" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-bell"></i> <span class="label label-info">@count</span></a>
                                     <!-- Dropdown -->
                                     <ul class="dropdown-menu" role="button" aria-labelledby="notifications">
 
                                         <!-- Dropdown menu head -->
                                         <li class="dropdown-head">
-                                            Notifications <span class="label label-info pull-right">@counter</span>
+                                            Notifications <span class="label label-info pull-right">5</span>
                                         </li>
                                         <!-- Content -->
-                                        @{
-                                            var charthelper = new chartdatahelper();
-                                            var userId = User.Identity.GetUserId();
-                                            var pn = charthelper.PopularNotifications(userId);                                                                                        
-                                        }
-                                        @foreach (var notification in pn)
-                                        {                                                                                       
-                                            
-                                            <li>
-                                                <a href="#">
-                                                    <!-- Title -->
-                                                    <strong>@notification.Ticket.Title</strong> <i class="fa fa-reply pull-right"></i>
-                                                    <!-- Para -->
-                                                    <span>@notification.message</span>
-                                                    <div class="clearfix"></div>
-                                                </a>
-                                            </li>
-                                        }  
+                                        <li>
+                                            <a href="#">
+                                                <!-- Colored icon with text and time -->
+                                                <i class="fa fa-user"></i> New User Registered <b class="pull-right">5 mins ago</b>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-shopping-cart"></i> New Order for Dress <b class="pull-right">10 mins ago</b>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-sign-out"></i> User Ravi Kumar Sign Out <b class="pull-right">20 hr ago</b>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-envelope"></i> New Message from Ravi <b class="pull-right">1 day ago</b>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <i class="fa fa-laptop"></i> Full Backup Completed <b class="pull-right">2 day ago</b>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+
                                         <li class="dropdown-foot text-center">
-                                            <a href="@Url.Action("Notifications")">View All</a>
-                                        </li>                                                                              
+                                            <a href="#">View All</a>
+                                        </li>
+
                                     </ul>
                                 </div>
 
                                 <!-- Messages -->
                                 <div class="dropdown">
-                                    @{
-                                        var pt = charthelper.PopularTickets(userId);
-                                        var ticketcount = charthelper.TicketCount(userId);
-                                        
-                                    }
-                                    <a href="#" id="messages" data-toggle="dropdown" class="mhead-icon"><i class="icon-ticket"></i> <span class="label label-danger">@ticketcount</span></a>
+                                    <a href="#" id="messages" data-toggle="dropdown" class="mhead-icon"><i class="icon-ticket"></i> <span class="label label-danger">5</span></a>
                                     <ul class="dropdown-menu" role="button" aria-labelledby="messages">
 
                                         <!-- Dropdown menu head -->
                                         <li class="dropdown-head">
-                                            Tickets <span class="label label-danger pull-right">@ticketcount</span>
+                                            Tickets <span class="label label-danger pull-right">5</span>
                                         </li>
                                         <!-- Content -->
-                                        @foreach (var ticket in pt)
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Details", "Tickets", new { Id = ticket.TicketId })">
-                                                    <!-- Title -->
-                                                    @ticket.Title <i class="fa fa-reply pull-right"></i>
-                                                    <!-- Para -->
-                                                    <span>@ticket.Description.</span>
-                                                    <div class="clearfix"></div>
-                                                </a>
-                                            </li>
-                                        }                                                                                
+                                        <li>
+                                            <a href="#">
+                                                <!-- Title -->
+                                                Hello How are you? <i class="fa fa-reply pull-right"></i>
+                                                <!-- Para -->
+                                                <span>Lorem ipsum dolor sit amet something elit.</span>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                What are you doing today? <i class="fa fa-reply pull-right"></i>
+                                                <span>Lorem ipsum dolor sit amet something elit.</span>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                Why don't you come here? <i class="fa fa-reply pull-right"></i>
+                                                <span>Lorem ipsum dolor sit amet something elit.</span>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
 
                                         <li class="dropdown-foot text-center">
-                                            <a href="@Url.Action("Index","Tickets")">View All</a>
+                                            <a href="#">View All</a>
                                         </li>
 
                                     </ul>
@@ -191,39 +214,55 @@
 
                                 <!-- Users -->
                                 <div class="dropdown">
-                                    @{
-                                        //var projectCount = charthelper.ProjectCount(userId);
-                                        //var pp = charthelper.PopularProjects(userId);
-                                    }
-                                    <a href="#" id="users" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-user"></i> <span class="label label-success">@*@projectCount*@</span></a>
+                                    <a href="#" id="users" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-user"></i> <span class="label label-success">5</span></a>
                                     <!-- Dropdown -->
                                     <ul class="dropdown-menu drop-users" role="button" aria-labelledby="users">
 
                                         <!-- Dropdown menu head -->
                                         <li class="dropdown-head">
-                                            Projects <span class="label label-success pull-right">@*@projectCount*@</span>
+                                            Users <span class="label label-success pull-right">5</span>
                                         </li>
                                         <!-- Content -->
-                                        @*@foreach (var project in pp)
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Details", "Projects", new { Id = project.ProjectId })">
-                                                    <!-- Title -->
-                                                    @project.Name <i class="fa fa-reply pull-right"></i>
-                                                    <!-- Para -->
-                                                    <span>@project.Created.</span>
-                                                    <div class="clearfix"></div>
-                                                </a>
-                                            </li>
-                                        }*@
-                                        
+                                        <li>
+                                            <a href="#">
+                                                <!-- User image -->
+                                                <img src="#" alt="" class="img-responsive img-circle" />
+                                                <!-- User details -->
+                                                <div class="duser-content">
+                                                    Anjelina Jolie
+                                                    <span>Lorem ipsum dolor sit amet elit.</span>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <img src="#" alt="" class="img-responsive img-circle" />
+                                                <div class="duser-content">
+                                                    Brad Pitt
+                                                    <span>Lorem ipsum dolor sit amet elit.</span>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="#">
+                                                <img src="#" alt="" class="img-responsive img-circle" />
+                                                <div class="duser-content">
+                                                    Al Pacino
+                                                    <span>Lorem ipsum dolor sit amet elit.</span>
+                                                </div>
+                                                <div class="clearfix"></div>
+                                            </a>
+                                        </li>
+
                                         <li class="dropdown-foot text-center">
-                                            <a href="@Url.Action("Index","Projects")">View All</a>
+                                            <a href="#">View All</a>
                                         </li>
 
                                     </ul>
                                 </div>
-                                
+
                             </div>
                             <div class="clearfix"></div>
                         </div>
@@ -239,10 +278,10 @@
 
                                 <!-- Dropdown -->
                                 <ul class="dropdown-menu" aria-labelledby="profile">
-                                    <li><a href="">View/Edit Profile <span class="badge badge-info pull-right">6</span></a></li>
-                                    <li><a href="">Change Settings</a></li>
-                                    <li><a href="">Messages <span class="badge badge-danger pull-right">5</span></a></li>
-                                    <li><a href="">Sign Out</a></li>
+                                    <li><a href="#">View/Edit Profile <span class="badge badge-info pull-right">6</span></a></li>
+                                    <li><a href="#">Change Settings</a></li>
+                                    <li><a href="#">Messages <span class="badge badge-danger pull-right">5</span></a></li>
+                                    <li><a href="#">Sign Out</a></li>
                                 </ul>
                             </div>
                             <div class="clearfix"></div>
@@ -272,13 +311,12 @@
 
         <script src="//cdn.datatables.net/1.10.7/js/jquery.dataTables.min.js"></script>
         <script src="//cdn.datatables.net/plug-ins/1.10.7/integration/bootstrap/3/dataTables.bootstrap.js"></script>
-        <script src="/dist/js/bootstrap-select.min.js"></script>
+        <script src="~/dist/js/bootstrap-select.min.js"></script>
         <script src="/templatescripts/jquery-ui.min.js"></script>
         <script src="/templatescripts/bootstrap-datetimepicker.min.js"></script>
         <script src="/templatescripts/wysihtml5-0.3.0.js"></script>
         <script src="/templatescripts/prettify.js"></script>
         <script src="/templatescripts/bootstrap-wysihtml5.min.js"></script>
-        <script src="/templatescripts/fullcalendar.min.js"></script>
 
         <script src="/templatescripts/jquery.flot.min.js"></script>
         <script src="/templatescripts/jquery.flot.stack.min.js"></script>
@@ -296,8 +334,7 @@
         <script src="/templatescripts/jquery.slimscroll.min.js"></script>
         <!-- Data Tables JS -->
         <script src="/templatescripts/jquery.dataTables.min.js"></script>
-        <script src="/templatescripts/jquery-impromptu.js"></script>
-        <script src="/templatescripts/custom.js"></script>
+    
         <script>
             $(document).ready(function () {
                 $('#index').dataTable({});                               
@@ -348,11 +385,11 @@
                 }
             });
 
-    
+
         });
     </script>
-    
     <!-- Custom JS -->
+    <script src="/templatescripts/custom.js"></script>
             
 </body>
 </html>

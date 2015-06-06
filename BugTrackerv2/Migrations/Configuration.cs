@@ -65,27 +65,6 @@ namespace BugTrackerv2.Migrations
                 userManager.AddToRole(user.Id, "Administrator");
             }
 
-            //create guess/admin login
-            ApplicationUser guess;
-            if(!context.Users.Any(r => r.Email == "Administrator@Test.com"))
-            {
-                guess = new ApplicationUser
-                {
-                    UserName = "Administrator@Test.com",
-                    Email="Administrator@Test.com",
-                    DisplayName = "Guess"
-                };
-                userManager.Create(guess, "MjjdHoB21124");
-            }
-            else
-            {
-                guess = context.Users.Single(u => u.Email == "Administrator@Test.com");
-            }
-
-            if(!userManager.IsInRole(guess.Id, "Administrator"))
-            {
-                userManager.AddToRole(guess.Id, "Administrator");
-            }
 
             //TICKETTYPES
             if(!context.TicketTypes.Any(tt => tt.Name == "Defect"))
