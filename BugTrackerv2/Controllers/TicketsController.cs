@@ -20,7 +20,7 @@ namespace BugTrackerv2.Controllers
     public class TicketsController : Controller
     {
         private ApplicationDbContext db = new ApplicationDbContext();
-
+        
         // GET: Tickets
         public ActionResult Index()
         {
@@ -224,7 +224,7 @@ namespace BugTrackerv2.Controllers
         public ActionResult Edit(Ticket ticket)
         {
             
-
+            
             if (ModelState.IsValid)
             {
                 
@@ -264,7 +264,7 @@ namespace BugTrackerv2.Controllers
                     {
                         TicketId = ticket.TicketId,
                         UserId = ticket.AssignedToUserId,
-                        message = "You've been assigned to ticket titled " + ticket.Title + " by " + db.Users.Find(UserId),
+                        message = "You've been assigned to ticket titled " + ticket.Title + " by " + db.Users.Find(UserId).DisplayName,
                         Created = System.DateTime.Now,
                         read = false
                     };
@@ -273,7 +273,7 @@ namespace BugTrackerv2.Controllers
                     {
                         Subject = "You've been assigned a ticket",
                         Destination = db.Users.FirstOrDefault(u => u.Id == ticket.AssignedToUserId).Email,
-                        Body = "You've been assigned to ticket titled " + ticket.Title + " by " + db.Users.Find(UserId) + "."
+                        Body = "You've been assigned to ticket titled " + ticket.Title + " by " + db.Users.Find(UserId).DisplayName + "."
 
                     });
 

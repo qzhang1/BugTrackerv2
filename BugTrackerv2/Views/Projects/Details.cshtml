@@ -13,27 +13,55 @@
 <div class="container">
     <div class="row">
         <div class="col-md-12">
-            <p><strong>Name</strong> @Model.projectName</p>
+            <div >
+                <p><strong>Name</strong> @Model.projectName</p>
+            </div>            
         </div>
     </div>
     <br />
     <div class="row">
         <div class="col-md-5">
-            <table class="table-striped" border="1">
-                <tr><th>Project Managers</th></tr>
-                @foreach (var user in Model.PM)
-                {
-                    <tr><td>@user.DisplayName</td></tr>
-                }                
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{var userCount = 1;}
+                    @foreach (var user in Model.PM)
+                    {
+                        
+                        <tr>
+                            <td>@userCount</td>
+                            <td>@user.DisplayName</td>
+                        </tr>
+                        userCount++;
+                    } 
+                </tbody>                               
             </table>
         </div>
         <div class="col-md-5">
-            <table class="table-striped" border="1">
-                <tr><th>Developers</th></tr>
-                @foreach (var user in Model.Devs)
-                {
-                    <tr><td>@user.DisplayName</td></tr>
-                }
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @{var developerCount = 1;}
+                    @foreach (var user in Model.Devs)
+                    {
+                        
+                        <tr>
+                            <td>@developerCount</td>
+                            <td>@user.DisplayName</td>
+                        </tr>
+                        ++developerCount;
+                    }
+                </tbody>                
             </table>
         </div>
     </div>

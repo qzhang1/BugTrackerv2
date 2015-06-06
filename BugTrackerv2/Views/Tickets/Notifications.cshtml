@@ -44,6 +44,12 @@
                                             @*@Html.ActionLink("Details", "NotificationDetails", new { Id = note.TicketNotificationId })*@
                                             <a href="#" data-toggle="modal" data-target="#@note.TicketNotificationId" class="btn btn-primary"><span class="fa fa-search-plus"> Details</span></a>
                                             <div class="modal fade" id="@note.TicketNotificationId" style="width:630px;">
+                                                <script>
+                                                    function changeState(state)
+                                                    {
+                                                        return @note.read = !state;
+                                                    }
+                                                </script>
                                                 <div class="modal-dialog">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
@@ -84,6 +90,3 @@
         </div>
     }
 </div>
-<script>
-    
-</script>

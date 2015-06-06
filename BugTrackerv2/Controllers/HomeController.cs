@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BugTrackerv2.Models;
+using Microsoft.AspNet.Identity;
 namespace BugTrackerv2.Controllers
 {
     public class HomeController : Controller
@@ -12,8 +13,14 @@ namespace BugTrackerv2.Controllers
 
         public ActionResult Index()
         {
-            
-            return View();
+            if(User.Identity.IsAuthenticated)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Landing");
+            }
         }
 
         public ActionResult About()
@@ -27,6 +34,11 @@ namespace BugTrackerv2.Controllers
         {
             ViewBag.Message = "Your contact page.";
 
+            return View();
+        }
+
+        public ActionResult Landing()
+        {
             return View();
         }
     }
