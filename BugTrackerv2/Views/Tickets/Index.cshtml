@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Index";
+    
 }
 <br /><br />
 <style>
@@ -131,7 +132,8 @@
                     {
                         <span>
                             |
-                            @Html.ActionLink("Edit", "Edit", new { id = item.TicketId }) |
+                            @Html.ActionLink("Edit", "Edit", new { id = item.TicketId })
+                             |
                             @Html.ActionLink("Delete", "Delete", new { id = item.TicketId })
                         </span>
                     }
