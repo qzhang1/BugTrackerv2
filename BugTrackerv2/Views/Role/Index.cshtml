@@ -28,13 +28,43 @@
         <tr>
             <td>Users without roles</td>
             <td>
-                <a href="#noRoles" class="btn btn-primary" data-toggle="collapse" aria-expanded="false"><i class="fa fa-search-plus"></i>View</a>
+                <a href="#noRoles" class="btn btn-primary" data-toggle="modal"><i class="fa fa-search-plus"></i>View</a>
                 
-                <div class="collapse" id="noRoles" style="margin-top:10px;">
-                    <div class="well" style="width:260px;margin-bottom:0;padding-bottom:9px;">
-                        @Html.ListBox("noRole", null, htmlAttributes: new { })
+                <!--Users w/o Roles Modal-->
+                <div class="modal fade" id="noRoles" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                <h4 class="modal-title">Delete Account &nbsp; <span class="fa fa-group fa-2x"></span></h4>
+                            </div>
+
+                            <div class="modal-body">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var user in Model.noRoles)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @user.DisplayName
+                                                </td>
+                                            </tr>
+                                        }                                        
+                                    </tbody>
+                                </table>
+                            </div>
+
+                        </div>
                     </div>
-                </div>                
+                </div>
+
+                                
             </td>
         </tr>
     </tfoot>

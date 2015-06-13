@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
-    @Styles.Render("~/Content/css")
+    @Styles.Render("~/bundles/css")
     @Scripts.Render("~/bundles/modernizr")
     <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="/dist/css/bootstrap-select.min.css" rel="stylesheet" />
@@ -22,246 +22,23 @@
 </head>
 <body>    
     <div class="outer">
-        <div class="sidebar">
-            <div class="sidey">
-                <div class="logo" style="padding-bottom:0px;padding-top:0px;">
-                    <h1>
-                        <a href="@Url.Action("Index","Home")">
-                            <i class="fa fa-desktop br-red"></i>BugTrack<span style="top:-20px;">Dashboard</span>
-                        </a>
-                    </h1>
-                </div>
-                <div class="sidebar-dropdown"><a class="br-red"><i class="fa fa-bars"></i></a></div>
-                <div class="side-nav">
-                    <div class="side-nav-block">
-                        <!-- Sidebar heading -->
-                        <h4>Main</h4>
-                        <!-- Sidebar links -->
-                        <ul class="list-unstyled">
-                            <li><a href="@Url.Action("Index", "Home")"><i class="fa fa-desktop"></i> Dashboard</a></li>
-                            @if (User.IsInRole("Administrator"))
-                        {
-                            <!-- Mainmenu with submenu -->
-                                <li class="has_submenu">
-                                    <a href="#" class="dropdown-button"><i class="fa fa-user"></i> Admin <span class="nav-caret fa fa-caret-down"></span></a>
-                                    <!-- Submenu -->
-                                    <ul class="list-unstyled">
-                                        <li><a href="@Url.Action("Index","Role")"><i class="fa fa-angle-double-right"></i> Roles</a></li>
-                                        <li><a href="@Url.Action("Index","Projects")"><i class="fa fa-angle-double-right"></i> Projects</a></li>
-                                    </ul>
-                                </li>
-                        }
-                        else if (User.IsInRole("Project Manager") || User.IsInRole("Developer"))
-                        {
-                            <li><a href="@Url.Action("Index","Projects")"><i class="fa fa-file-code-o"></i> Project</a></li>
-                        }
-                          
-                            <!-- Mainmenu with submenu -->
-                                <li class="has_submenu">
-                                    <a href="#" class="dropdown-button">
-                                        <i class="icon-ticket"></i> Tickets <span class="nav-caret fa fa-caret-down"></span>
-                                    </a>
-                                    <!-- Submenu -->
-                                    <ul class="list-unstyled">
-                                        <li><a href="@Url.Action("Index","Tickets")"><i class="fa fa-angle-double-right"></i> Ticket table</a></li>
-                                        
-                                    </ul>
-                                </li>
-                        
 
+        <!--NavBar = SideBar + MainBar-->
+        @Html.Action("PopulateSideBar", "Home")
 
-                           @{
-                               var a = new notificationHelper();
-                               var count = a.CountNotifications(User.Identity.GetUserId());
-                        }
-                            <li>
-                                <a href="@Url.Action("Notifications","Tickets")"><i class="fa fa-bell"></i> Notifications <span class="label label-info" style="float:right;">@count</span></a>                                
-                            </li>
-                            
-                        </ul>
-                    </div>
-
-                    <div class="side-nav-block">
-                        <h4>Menu</h4>
-                        <ul class="list-unstyled">
-                            @if (!User.Identity.IsAuthenticated)
-                            {
-                                <li><a href="@Url.Action("Login","Account")"><i class="fa fa-sign-in"></i> Login</a></li>
-                            }                            
-                            <li><a href="lock.html"><i class="fa fa-lock"></i> Lock</a></li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <!--MainBar-->
         <div class="mainbar">
-
             <!-- Mainbar head starts -->
-            <div class="main-head" style="padding-bottom:0;">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                            <!-- Page title -->
-                            <h2 style="padding-bottom: 0px; margin-bottom:10px;margin-top:0;"><i class="fa fa-desktop lblue"></i> Dashboard</h2>
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 col-xs-6">
-                            <!-- Search block -->
-                            <div class="head-search">
-                                
-                            </div>
-                        </div>
-
-                        <div class="col-md-3 col-sm-4 hidden-xs">
-                            <!-- Notifications -->
-                            <div class="head-noty text-center">
-                                @{
-                                    var b = new notificationHelper();
-                                    var counter = b.CountNotifications(User.Identity.GetUserId());
-                                }
-                                <!-- Notifications -->
-                                <div class="dropdown">
-                                    <a href="#" id="notifications" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-bell"></i> <span class="label label-info">@counter</span></a>
-                                    <!-- Dropdown -->
-                                    <ul class="dropdown-menu" role="button" aria-labelledby="notifications">
-
-                                        <!-- Dropdown menu head -->
-                                        <li class="dropdown-head">
-                                            Notifications <span class="label label-info pull-right">@counter</span>
-                                        </li>
-                                        <!-- Content -->
-                                        @{
-                                            var charthelper = new chartdatahelper();
-                                            var userId = User.Identity.GetUserId();
-                                            var pn = charthelper.PopularNotifications(userId);                                                                                        
-                                        }
-                                        @foreach (var notification in pn)
-                                        {                                                                                       
-                                            
-                                            <li>
-                                                <a href="#">
-                                                    <!-- Title -->
-                                                    <strong>@notification.Ticket.Title</strong> <i class="fa fa-reply pull-right"></i>
-                                                    <!-- Para -->
-                                                    <span>@notification.message</span>
-                                                    <div class="clearfix"></div>
-                                                </a>
-                                            </li>
-                                        }  
-                                        <li class="dropdown-foot text-center">
-                                            <a href="@Url.Action("Notifications")">View All</a>
-                                        </li>                                                                              
-                                    </ul>
-                                </div>
-
-                                <!-- Messages -->
-                                <div class="dropdown">
-                                    @{
-                                        var pt = charthelper.PopularTickets(userId);
-                                        var ticketcount = charthelper.TicketCount(userId);
-                                        
-                                    }
-                                    <a href="#" id="messages" data-toggle="dropdown" class="mhead-icon"><i class="icon-ticket"></i> <span class="label label-danger">@ticketcount</span></a>
-                                    <ul class="dropdown-menu" role="button" aria-labelledby="messages">
-
-                                        <!-- Dropdown menu head -->
-                                        <li class="dropdown-head">
-                                            Tickets <span class="label label-danger pull-right">@ticketcount</span>
-                                        </li>
-                                        <!-- Content -->
-                                        @foreach (var ticket in pt)
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Details", "Tickets", new { Id = ticket.TicketId })">
-                                                    <!-- Title -->
-                                                    @ticket.Title <i class="fa fa-reply pull-right"></i>
-                                                    <!-- Para -->
-                                                    <span>@ticket.Description.</span>
-                                                    <div class="clearfix"></div>
-                                                </a>
-                                            </li>
-                                        }                                                                                
-
-                                        <li class="dropdown-foot text-center">
-                                            <a href="@Url.Action("Index","Tickets")">View All</a>
-                                        </li>
-
-                                    </ul>
-                                </div>
-
-                                <!-- Users -->
-                                <div class="dropdown">
-                                    @{
-                                        //var projectCount = charthelper.ProjectCount(userId);
-                                        //var pp = charthelper.PopularProjects(userId);
-                                    }
-                                    <a href="#" id="users" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-user"></i> <span class="label label-success">@*@projectCount*@</span></a>
-                                    <!-- Dropdown -->
-                                    <ul class="dropdown-menu drop-users" role="button" aria-labelledby="users">
-
-                                        <!-- Dropdown menu head -->
-                                        <li class="dropdown-head">
-                                            Projects <span class="label label-success pull-right">@*@projectCount*@</span>
-                                        </li>
-                                        <!-- Content -->
-                                        @*@foreach (var project in pp)
-                                        {
-                                            <li>
-                                                <a href="@Url.Action("Details", "Projects", new { Id = project.ProjectId })">
-                                                    <!-- Title -->
-                                                    @project.Name <i class="fa fa-reply pull-right"></i>
-                                                    <!-- Para -->
-                                                    <span>@project.Created.</span>
-                                                    <div class="clearfix"></div>
-                                                </a>
-                                            </li>
-                                        }*@
-                                        
-                                        <li class="dropdown-foot text-center">
-                                            <a href="@Url.Action("Index","Projects")">View All</a>
-                                        </li>
-
-                                    </ul>
-                                </div>
-                                
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-
-
-                        <div class="col-md-3 hidden-sm hidden-xs">
-                            <!-- Head user -->
-                            <div class="head-user dropdown pull-right">                                
-                                    <!-- Icon
-                                <i class="fa fa-user"></i>  -->
-                                    <!-- User name -->
-                                    @Html.Partial("_LoginPartial")
-
-                                <!-- Dropdown -->
-                                <ul class="dropdown-menu" aria-labelledby="profile">
-                                    <li><a href="">View/Edit Profile <span class="badge badge-info pull-right">6</span></a></li>
-                                    <li><a href="">Change Settings</a></li>
-                                    <li><a href="">Messages <span class="badge badge-danger pull-right">5</span></a></li>
-                                    <li><a href="">Sign Out</a></li>
-                                </ul>
-                            </div>
-                            <div class="clearfix"></div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- Mainbar head ends -->
+            @Html.Action("PopulateMainBar", "Home")
 
             <br />
             <div class="body-content">
-                <div class="page-content">                   
+                <div class="page-content">
                     @RenderBody()
-                </div>               
+                </div>
                 <hr />
                 <footer>
-                    <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+                    <p>&copy; @DateTime.Now.Year - Bug-Off</p>
                 </footer>
             </div>
         </div>
@@ -351,8 +128,7 @@
     
         });
     </script>
-    
-    <!-- Custom JS -->
+
             
 </body>
 </html>

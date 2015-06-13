@@ -1,0 +1,142 @@
+﻿@model BugTrackerv2.Models.CustomViewModels.NavBarViewModel
+
+<div class="main-head" style="padding-bottom:0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                <!-- Page title -->
+                <h2 style="padding-bottom: 0px; margin-bottom:10px;margin-top:0;"><i class="fa fa-desktop lblue"></i> Dashboard</h2>
+            </div>
+
+            <div class="col-md-3 col-sm-4 col-xs-6">
+                <!-- Search block -->
+                <div class="head-search">
+
+                </div>
+            </div>
+
+            <div class="col-md-3 col-sm-4 hidden-xs">
+                <!-- Notifications -->
+                <div class="head-noty text-center">
+
+                    <!-- Notifications -->
+                    <div class="dropdown">
+                        <a href="#" id="notifications" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-bell"></i> <span class="label label-info">@Model.NotificationCount</span></a>
+                        <!-- Dropdown -->
+                        <ul class="dropdown-menu" role="button" aria-labelledby="notifications">
+
+                            <!-- Dropdown menu head -->
+                            <li class="dropdown-head">
+                                Notifications <span class="label label-info pull-right">@Model.NotificationCount</span>
+                            </li>
+                            <!-- Content -->
+                            @foreach (var notification in Model.Notifications)
+                            {
+
+                                <li>
+                                    <a href="#">
+                                        <!-- Title -->
+                                        <strong>@notification.Ticket.Title</strong> <i class="fa fa-reply pull-right"></i>
+                                        <!-- Para -->
+                                        <span>@notification.message</span>
+                                        <div class="clearfix"></div>
+                                    </a>
+                                </li>
+                            }
+                            <li class="dropdown-foot text-center">
+                                <a href="@Url.Action("Notifications")">View All</a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Ticket -->
+                    <div class="dropdown">
+
+                        <a href="#" id="messages" data-toggle="dropdown" class="mhead-icon"><i class="icon-ticket"></i> <span class="label label-danger">@Model.TicketCount</span></a>
+                        <ul class="dropdown-menu" role="button" aria-labelledby="messages">
+
+                            <!-- Dropdown menu head -->
+                            <li class="dropdown-head">
+                                Tickets <span class="label label-danger pull-right">@Model.TicketCount</span>
+                            </li>
+                            <!-- Content -->
+                            @foreach (var ticket in Model.Tickets)
+                            {
+                                <li>
+                                    <a href="@Url.Action("Details", "Tickets", new { Id = ticket.TicketId })">
+                                        <!-- Title -->
+                                        @ticket.Title <i class="fa fa-reply pull-right"></i>
+                                        <!-- Para -->
+                                        <span>@ticket.Description.</span>
+                                        <div class="clearfix"></div>
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="dropdown-foot text-center">
+                                <a href="@Url.Action("Index","Tickets")">View All</a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                    <!-- Projects -->
+                    <div class="dropdown">
+
+                        <a href="#" id="users" data-toggle="dropdown" class="mhead-icon"><i class="fa fa-user"></i> <span class="label label-success">@Model.ProjectCount</span></a>
+                        <!-- Dropdown -->
+                        <ul class="dropdown-menu drop-users" role="button" aria-labelledby="users">
+
+                            <!-- Dropdown menu head -->
+                            <li class="dropdown-head">
+                                Projects <span class="label label-success pull-right">@Model.ProjectCount</span>
+                            </li>
+                            <!-- Content -->
+                            @foreach (var project in Model.Projects)
+                            {
+                                <li>
+                                    <a href="@Url.Action("Details", "Projects", new { Id = project.ProjectId })">
+                                        <!-- Title -->
+                                        @project.Name <i class="fa fa-reply pull-right"></i>
+                                        <!-- Para -->
+                                        <span>@project.Created.</span>
+                                        <div class="clearfix"></div>
+                                    </a>
+                                </li>
+                            }
+
+                            <li class="dropdown-foot text-center">
+                                <a href="@Url.Action("Index","Projects")">View All</a>
+                            </li>
+
+                        </ul>
+                    </div>
+
+                </div>
+                <div class="clearfix"></div>
+            </div>
+
+
+            <div class="col-md-3 hidden-sm hidden-xs">
+                <!-- Head user -->
+                <div class="head-user dropdown pull-right">
+                    <!-- Icon
+                    <i class="fa fa-user"></i>  -->
+                    <!-- User name -->
+                    @Html.Partial("_LoginPartial")
+
+                    <!-- Dropdown -->
+                    <ul class="dropdown-menu" aria-labelledby="profile">
+                        <li><a href="">View/Edit Profile <span class="badge badge-info pull-right">6</span></a></li>
+                        <li><a href="">Change Settings</a></li>
+                        <li><a href="">Messages <span class="badge badge-danger pull-right">5</span></a></li>
+                        <li><a href="">Sign Out</a></li>
+                    </ul>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+

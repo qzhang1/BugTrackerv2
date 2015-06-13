@@ -20,7 +20,6 @@ namespace BugTrackerv2.Controllers
         public ActionResult Index()
         {
             
-
             var roles = db.Roles.ToList();
             var users = db.Users.ToList();
            
@@ -28,10 +27,9 @@ namespace BugTrackerv2.Controllers
             var model = new UserRoleViewModel
             {
                 UserList = users,
-                RoleList = roles,                
-            };
-            var roless = db.Users.Where(u => u.Roles.All(r => r.UserId != u.Id)).ToList();
-            ViewBag.noRole = new MultiSelectList(db.Users.Where(u => u.Roles.All(r => r.UserId!= u.Id)), "Id", "DisplayName");
+                RoleList = roles,  
+                noRoles = db.Users.Where(u => u.Roles.All(r => r.UserId!= u.Id)).ToList()
+            };            
 
             return View(model);
         }

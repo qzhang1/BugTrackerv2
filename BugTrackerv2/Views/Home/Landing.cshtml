@@ -21,10 +21,9 @@
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Custom CSS -->
-    <link href="/css/heroic-features.css" rel="stylesheet">
+    <link href="/css/landing-page.css" rel="stylesheet">
 
-    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
-    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="/css/font-awesome.min.css" rel="stylesheet">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -37,9 +36,10 @@
 
 <body>
 
+    
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
+    <nav class="navbar navbar-default navbar-fixed-top topnav" role="navigation">
+        <div class="container topnav">
             <!-- Brand and toggle get grouped for better mobile display -->
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -48,13 +48,16 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="#"><i class="fa fa-bug"></i> Bug Tracker</a>
+                <a class="navbar-brand topnav" href="#"><strong>BugOff!</strong></a>
             </div>
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">                    
+                <ul class="nav navbar-nav navbar-right">                    
                     <li>
-                        <a href="#">Contact</a>
+                        <a href="#services">Services</a>
+                    </li>
+                    <li>
+                        <a href="#contact">Contact</a>
                     </li>
                 </ul>
             </div>
@@ -63,87 +66,130 @@
         <!-- /.container -->
     </nav>
 
-    <!-- Page Content -->
-    <div class="container">
 
-        <!-- Jumbotron Header -->
-        <header class="jumbotron hero-spacer">
-            <h1>Welcome to BugTracker v.2!</h1>
-            <p>BugTracker v.2 is the latest version of BugTracker. A BugTracker is software used to collect bugs within a software and service that bug in an organized manner. Click View to see more.</p>
-            <p>
-                <a href="@Url.Action("Login","Account")" class="btn btn-primary btn-large">View More!</a>
-            </p>
-        </header>
-
-        <hr>
-
-        <!-- Title -->
-        <div class="row">
-            <div class="col-lg-12">
-                <h3>Features</h3>
-            </div>
-        </div>
-        <!-- /.row -->
-        <!-- Page Features -->
-        <div class="row text-center">
-
-            <div class="col-md-4 col-sm-6 hero-feature">
-                
-                    <h2><span class="fa fa-bell-o fa-3x"></span> Notifications</h2>
-                    <div class="caption">
-                        
-                        <p>Notifications are sent if any changes are made to a ticket that the user owns or is assigned to. Click the button below to view more.</p>
-                        <p>
-                            <a class="btn btn-default" href="@Url.Action("Login","Account")">View &raquo;</a>
-                        </p>
-                    </div>
-               
-            </div>
-
-            <div class="col-md-4 col-sm-6 hero-feature">
-                
-                    <h2><span class="fa fa-folder-open-o fa-3x"></span> Projects</h2>
-                    <div class="caption">
-                        
-                        <p>Projects are assigned to Project Managers and Developers. Click View to see the projects that are assigned to you.</p>
-                        <p>
-                            <a class="btn btn-default" href="@Url.Action("Login","Account")">View &raquo;</a>
-                        </p>
-                    </div>
-                
-            </div>
-
-            <div class="col-md-4 col-sm-6 hero-feature">
-                
-                    <h2><span class="fa fa-bar-chart-o fa-3x"></span> Tickets</h2>
-                    <div class="caption">
-                        
-                        <p>Tickets are submitted by authorized personel that includes submitters. Click View to see tickets assigned to you.</p>
-                        <p>
-                            <a class="btn btn-default" href="@Url.Action("Login","Account")">View &raquo;</a>
-                        </p>
-                    </div>
-                
-            </div>
-
-           
-
-        </div>
-        <!-- /.row -->
-
-        <hr>
-
-        <!-- Footer -->
-        <footer>
+    <a name="about"></a>
+    <div class="intro-header">
+        <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <p></p>
+                    <div class="intro-message">
+                        <h1>BugOff!</h1>
+                        <h3>A Custom Bug Tracking Ticketing Solution</h3>
+                        <h4>Developed By Qi Zhang</h4>
+                        <a href="/Account/Login" class="btn btn-primary btn-lg" style="visibility:visible;">Get Started</a>
+                        <hr class="intro-divider">
+                        <ul class="list-inline intro-social-buttons">
+                            <li>
+                                <a href="https://www.facebook.com/qi.zhang.1293" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/qzhang1" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                            </li>
+                            <li>
+                                <a href="https://www.linkedin.com/profile/view?id=328472508&trk=nav_responsive_tab_profile" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </footer>
-
+        </div>
     </div>
     <!-- /.container -->
+
+
+    <!--content section a-->
+    <a name="services"></a>
+    <div class="content-section-a">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Tired of tracking software bugs the old fashion way?</h2>
+                    <p class="lead">Well struggle no more. Register on BugOff!, a Custom bug tracking solution which uses tickets to track locate bugs right in their tracks. This service is free and easy to use
+                    so Sign up today!</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="/css/images/ipad.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-a -->
+
+
+
+    <div class="content-section-a">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">BugOff! now made available on all portable devices</h2>
+                    <p class="lead">This Service is now made available on all tablets and other portable services. Sign Up today!</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img class="img-responsive" src="/css/images/phones.png" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.content-section-a -->
+
+
+    <a name="contact"></a>
+    <div class="banner">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h2>Connect to Developer:</h2>
+                </div>
+                <div class="col-lg-6">
+                    <ul class="list-inline banner-social-buttons">
+                        <li>
+                            <a href="https://www.facebook.com/qi.zhang.1293" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">Facebook</span></a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/qzhang1" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/profile/view?id=328472508&trk=nav_responsive_tab_profile" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- /.container -->
+    </div>
+    <!-- /.banner -->
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="#">Home</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#services">Services</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="#contact">Contact</a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted small">Copyright &copy; Your Company 2014. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
     <!-- jQuery -->
     <script src="/Scripts/jquery-2.1.3.min.js"></script>
 

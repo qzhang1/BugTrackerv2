@@ -455,7 +455,7 @@ namespace BugTrackerv2.Controllers
         public ActionResult LogOff()
         {
             AuthenticationManager.SignOut();
-            return RedirectToAction("Login", "Account");
+            return RedirectToAction("Landing", "Home");
         }
 
         //

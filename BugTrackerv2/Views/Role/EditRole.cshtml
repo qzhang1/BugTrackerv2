@@ -11,8 +11,9 @@
 <div class="container">
     <h2>Edit Users to/from @Model.RoleName Role</h2>
     <br />
-    <div class="row">
-        <div class="col-md-6">
+    <div class="row">        
+        <div class="col-sm-6">
+            
             <h4>Search Users</h4>
             <div class="head-search">
                 @using (Html.BeginForm())
@@ -34,7 +35,7 @@
 
     <br />
     <div class="row">
-        <div class="col-md-10">
+        <div class="col-sm-10">
             <div class="panel panel-default">
                 <div class="panel-heading">
 
@@ -47,14 +48,14 @@
                 <div class="panel-body">
                     <div class="container">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-sm-12">
                                 <p>Add Users to:</p>
                                 @using (Html.BeginForm("EditRole", "Role", FormMethod.Post))
                                 {
                                     @Html.HiddenFor(model => model.RoleName)
                                     @Html.HiddenFor(model => model.RoleId)
                                     @Html.AntiForgeryToken()
-                                    @Html.ListBox("Selected", Model.Users, htmlAttributes: new { @multiple = "multiple", id = "my-select"})
+                                    @Html.ListBox("Selected", Model.Users, htmlAttributes: new { @multiple = "multiple", id = "my-select" })
                                 <br />
                                 <input type="submit" value="Save" class="btn btn-primary" />
                                 }

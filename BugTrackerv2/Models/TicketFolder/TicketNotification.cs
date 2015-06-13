@@ -15,6 +15,8 @@ namespace BugTrackerv2.Models.TicketFolder
         public string message { get; set; }
         public DateTime Created { get; set; }
         public bool read { get; set; }
+
+
         public Ticket Ticket { get; set; }
         public ApplicationUser User { get; set; }
     }
